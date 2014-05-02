@@ -145,7 +145,8 @@ KeyMan.prototype = {
             if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
                 this.menu.close();
                 //buttonText.set_text(_("Proc"));
-                let items = this.keyring.getItems(o.get_text());
+                let searchStrs = o.get_text().split(/\s+/);
+                let items = this.keyring.getItems(searchStrs);
                 print(items);
                 
                 // TODO better feedback to user

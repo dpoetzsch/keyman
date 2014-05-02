@@ -88,14 +88,24 @@ KeyringConnection.prototype = {
         return item.Label;
     },
     
-    getItems: function(searchStr) {
+    getItems: function(searchStrs) {
+        searchStrs.map(function(s) s.toLowerCase());
+    
         let searchResult = this.service.SearchItemsSync([]);
         let allItems = searchResult[0].concat(searchResult[1]);
         let matchingItems = [];
         
         for (let i in allItems) {
             let path = allItems[i];
-            if (this.getLabelFromPath(path).indexOf(searchStr) != -1) {
+            let label = this.getLabelFromPath(path).toLowerCase();
+            let isMatch = true;
+            for (let j in searchStrs) {
+                if (label.indexOf(searchStrs[j]) == -1) {
+                    isMatch = false;
+                    break;
+                }
+            }
+            if (isMatch) {
                 matchingItems.push(path);
             }
         }
