@@ -5,24 +5,24 @@ const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
-//const Clutter = imports.gi.Clutter;
-//const GLib = imports.gi.GLib;
-//const Gio = imports.gi.Gio;
-//const Shell = imports.gi.Shell;
+const GLib = imports.gi.GLib;
 //const Meta = imports.gi.Meta;
 
 const _ = imports.gettext.domain('keyman').gettext;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Clipboard = Me.imports.clipboard;
+const Bookmarks = Me.imports.bookmarks.Bookmarks;
 const KeyringConnection = Me.imports.keyringDbus.KeyringConnection;
-//const Utils = Me.imports.utils;
+const Utils = Me.imports.utils;
 //const mySettings = Utils.getSettings();
 
 const MAX_LENGTH = 100;
 const KEY_RETURN = 65293;
 const KEY_ENTER = 65421;
 const key_open = 'open-keyman';    // Schema key for key binding
+
+const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
 // KeyManager function
 function KeyMan() {
@@ -38,6 +38,9 @@ KeyMan.prototype = {
 
         // connect to keyring
         this.keyring = new KeyringConnection();
+        
+        // initialize bookmarks
+        this.bookmarks = new Bookmarks(dataDir);
         
         // remember timeouts
         this.timeouts = []
@@ -94,25 +97,27 @@ KeyMan.prototype = {
         this.mainBox.set_vertical(true);
 
         // Create bookmarked keys box
-        this.keyBox = new St.BoxLayout();
-        this.keyBox.set_vertical(true);
+        this.bookmarksBox = new St.BoxLayout();
+        this.bookmarksBox.set_vertical(true);
 
         // Create scrollview
         this.scrollView = new St.ScrollView({style_class: 'vfade',
                 hscrollbar_policy: Gtk.PolicyType.NEVER,
                 vscrollbar_policy: Gtk.PolicyType.AUTOMATIC});
-        this.scrollView.add_actor(this.keyBox);
+        this.scrollView.add_actor(this.bookmarksBox);
         this.mainBox.add_actor(this.scrollView);
         
-        let item = new PopupMenu.PopupMenuItem("TestItem");
-        item.connect('activate', Lang.bind(this, function() {
-            this.menu.close();
-            
-            let test_item_path = "/org/freedesktop/secrets/collection/test/1";
-            this.keyring.getSecretFromPath(test_item_path,
-                    Lang.bind(this, this._getSecretCallback));
-        }));
-        this.keyBox.add(item.actor);
+        // add bookmarks
+        for (let bookmark in this.bookmarks.iterator()) {
+            // TODO put label here
+            let item = new PopupMenu.PopupMenuItem(bookmark);
+            item.connect('activate', Lang.bind(this, function() {
+                this.menu.close();
+                this.keyring.getSecretFromPath(bookmark,
+                        Lang.bind(this, this._getSecretCallback));
+            }));
+            this.bookmarksBox.add(item.actor);
+        }
         
         // Separator
         this.Separator = new PopupMenu.PopupSeparatorMenuItem();

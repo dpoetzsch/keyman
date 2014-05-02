@@ -15,6 +15,7 @@ mkdir $DEST
 
 echo "Copying content..."
 cp -a extension.js keyman.js clipboard.js keyringDbus.js keyringInterfaces.js \
+      utils.js bookmarks.js \
       metadata.json COPYING locale/ keyman.pot stylesheet.css $DEST/
        
 echo "Restarting gnome shell..."
