@@ -84,5 +84,20 @@ KeyringConnection.prototype = {
     getLabelFromPath: function(path) {
         let item = new Interfaces.SecretItemProxy(bus, secretBus, path);
         return item.Label;
+    },
+    
+    getItems: function(searchStr) {
+        let searchResult = this.service.SearchItemsSync([]);
+        let allItems = searchResult[0].concat(searchResult[1]);
+        let matchingItems = [];
+        
+        for (let i in allItems) {
+            let path = allItems[i];
+            if (this.getLabelFromPath(path).indexOf(searchStr) != -1) {
+                matchingItems.push(path);
+            }
+        }
+        
+        return matchingItems;
     }
 }

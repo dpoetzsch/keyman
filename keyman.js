@@ -84,6 +84,11 @@ KeyMan.prototype = {
         }));
     },
     
+    _copySecret: function(path) {
+        this.keyring.getSecretFromPath(path,
+                Lang.bind(this, this._getSecretCallback));
+    },
+    
     _refresh: function() {
         let keyMenu = this.menu;
         let buttonText = this.buttonText;
@@ -113,8 +118,7 @@ KeyMan.prototype = {
             let item = new PopupMenu.PopupMenuItem(label);
             item.connect('activate', Lang.bind(this, function() {
                 this.menu.close();
-                this.keyring.getSecretFromPath(bookmark,
-                        Lang.bind(this, this._getSecretCallback));
+                this._copySecret(bookmark);
             }));
             this.bookmarksBox.add(item.actor);
         }
@@ -136,16 +140,22 @@ KeyMan.prototype = {
         
         let entrySearch = this.searchEntry.clutter_text;
         entrySearch.set_max_length(MAX_LENGTH);
-        entrySearch.connect('key-press-event', function(o, e) {
+        entrySearch.connect('key-press-event', Lang.bind(this, function(o, e) {
             let symbol = e.get_key_symbol();
             if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
-                keyMenu.close();
+                this.menu.close();
                 //buttonText.set_text(_("Proc"));
-                Main.notify("Your search was: " + o.get_text());
+                let items = this.keyring.getItems(o.get_text());
+                print(items);
+                
+                // TODO better feedback to user
+                if (items.length == 1) {
+                    this._copySecret(items[0]);
+                }
                 entrySearch.set_text('');
             }
             
-        });
+        }));
         
         bottomSection.actor.add_actor(this.searchEntry);
         //bottomSection.actor.add_style_class_name("newTaskSection");
