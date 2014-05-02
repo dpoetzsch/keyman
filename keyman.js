@@ -14,6 +14,9 @@ const Clipboard = Me.imports.clipboard;
 //const Utils = Me.imports.utils;
 //const mySettings = Utils.getSettings();
 
+const Gettext = imports.gettext;
+const _ = Gettext.domain('keyman').gettext;
+
 const MAX_LENGTH = 100;
 const KEY_RETURN = 65293;
 const KEY_ENTER = 65421;
