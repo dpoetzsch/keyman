@@ -109,8 +109,8 @@ KeyMan.prototype = {
         
         // add bookmarks
         for (let bookmark in this.bookmarks.iterator()) {
-            // TODO put label here
-            let item = new PopupMenu.PopupMenuItem(bookmark);
+            let label = this.keyring.getLabelFromPath(bookmark);
+            let item = new PopupMenu.PopupMenuItem(label);
             item.connect('activate', Lang.bind(this, function() {
                 this.menu.close();
                 this.keyring.getSecretFromPath(bookmark,

@@ -76,5 +76,13 @@ KeyringConnection.prototype = {
         } else {
             this._getSecret(path, callback);
         }
+    },
+    
+    /**
+     * Fetch the label of an item with the specified path.
+     */
+    getLabelFromPath: function(path) {
+        let item = new Interfaces.SecretItemProxy(bus, secretBus, path);
+        return item.Label;
     }
 }
