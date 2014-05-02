@@ -4,24 +4,25 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
 const Lang = imports.lang;
+const Mainloop = imports.mainloop;
 //const Clutter = imports.gi.Clutter;
 //const GLib = imports.gi.GLib;
 //const Gio = imports.gi.Gio;
 //const Shell = imports.gi.Shell;
 //const Meta = imports.gi.Meta;
+
+const _ = imports.gettext.domain('keyman').gettext;
+
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Clipboard = Me.imports.clipboard;
+const KeyringConnection = Me.imports.keyringDbus.KeyringConnection;
 //const Utils = Me.imports.utils;
 //const mySettings = Utils.getSettings();
-
-const Gettext = imports.gettext;
-const _ = Gettext.domain('keyman').gettext;
 
 const MAX_LENGTH = 100;
 const KEY_RETURN = 65293;
 const KEY_ENTER = 65421;
 const key_open = 'open-keyman';    // Schema key for key binding
-//const BASE_TASKS = "Do something\nDo something else\nDo more stuff\nDo that again\n";
 
 // KeyManager function
 function KeyMan() {
@@ -34,6 +35,12 @@ KeyMan.prototype = {
     
     _init: function() {
         PanelMenu.Button.prototype._init.call(this, St.Align.START);
+
+        // connect to keyring
+        this.keyring = new KeyringConnection();
+        
+        // remember timeouts
+        this.timeouts = []
 
         this.mainBox = null;
         this.buttonText = new St.Label({text:_("KM")});
@@ -61,8 +68,17 @@ KeyMan.prototype = {
                 }
             })
         );
-            
+        
         this._refresh();
+    },
+    
+    _getSecretCallback: function(label, secret) {
+        Clipboard.set(secret);
+        
+        // TODO put sleep time into preferences
+        this.timeouts.push(Mainloop.timeout_add(5000, function() {
+            Clipboard.empty();
+        }));
     },
     
     _refresh: function() {
@@ -91,9 +107,10 @@ KeyMan.prototype = {
         let item = new PopupMenu.PopupMenuItem("TestItem");
         item.connect('activate', Lang.bind(this, function() {
             this.menu.close();
-            Clipboard.set("TestItem");
-            imports.misc.util.spawn(["bash", "-c", "sleep 5; echo -n | xclip -select clipboard"]); // This needs xclip to be installed!
-            //imports.misc.util.spawn(['gnome-terminal', "-x", "bash", "-c", "keyring-helper test; if [ $? -neq 0 ]; then sleep 2; fi"]);
+            
+            let test_item_path = "/org/freedesktop/secrets/collection/test/1";
+            this.keyring.getSecretFromPath(test_item_path,
+                    Lang.bind(this, this._getSecretCallback));
         }));
         this.keyBox.add(item.actor);
         
@@ -135,5 +152,9 @@ KeyMan.prototype = {
     },
 
     _disable: function() {
+        this.keyring.close()
+        for (let id in this.timeouts) {
+            Mainloop.source_remove(id);
+        }
     }
 }

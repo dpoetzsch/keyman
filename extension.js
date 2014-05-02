@@ -1,12 +1,12 @@
 const Main = imports.ui.main;
+const Gettext = imports.gettext;
+
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const KeyMan = Me.imports.keyman.KeyMan;
 //const Utils = Me.imports.utils;
 //const mySettings = Utils.getSettings();
 
-const Gettext = imports.gettext;
 const _ = Gettext.domain('keyman').gettext;
-
-const KeyMan = Me.imports.keyman.KeyMan;
 
 let keyman;    // KeyManager instance
 

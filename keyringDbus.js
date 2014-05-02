@@ -2,9 +2,10 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Lang = imports.lang;
 
-// TODO in an extension this might look different
-imports.searchPath.push('.');
-const Interfaces = imports.keyringInterfaces;
+//imports.searchPath.push('.');
+//const Interfaces = imports.keyringInterfaces;
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Interfaces = Me.imports.keyringInterfaces;
 
 const bus = Gio.DBus.session;
 const secretBus = 'org.freedesktop.secrets';
@@ -47,7 +48,7 @@ KeyringConnection.prototype = {
         let res = this.service.LockSync([path]);
         assert(res[1] == "/");
         
-        callback(label, secret);
+        callback(String(label), String(secret));
     },
     
     /**
