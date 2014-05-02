@@ -1,14 +1,21 @@
 #!/bin/sh
 
-DEST=~/.local/share/gnome-shell/extensions/KeyringHelper@sunlight
+DEST=~/.local/share/gnome-shell/extensions/KeyMan@sunlight
 
 # compile locales
+echo "Compiling locales..."
 for locpath in locale/*; do
     loc=`basename locpath`
     msgfmt -o $locpath/LC_MESSAGES/keyman.mo $locpath/LC_MESSAGES/keyman.po
 done
 
-rm -rv $DEST
+echo "Removing old instance..."
+rm -r $DEST
 mkdir $DEST
-cp -av extension.js keyringDbus.js keyringInterfaces.js metadata.json \
-       COPYING locale/ keyman.pot stylesheet.css $DEST/
+
+echo "Copying content..."
+cp -a extension.js keyman.js clipboard.js keyringDbus.js keyringInterfaces.js \
+      metadata.json COPYING locale/ keyman.pot stylesheet.css $DEST/
+       
+echo "Restarting gnome shell..."
+gnome-shell --replace &
