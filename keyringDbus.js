@@ -37,7 +37,7 @@ KeyringConnection.prototype = {
         sessionObj.CloseSync();
     },
     
-    _getSecret: function(path, callback) {
+    _getSecret: function(path, relock, callback) {
         let item = new Interfaces.SecretItemProxy(bus, secretBus, path);
         
         let secret_res = item.GetSecretSync(this.session);
@@ -45,8 +45,10 @@ KeyringConnection.prototype = {
         let label = item.Label;
         let secret = secret_res[0][2];
 
-        let res = this.service.LockSync([path]);
-        assert(res[1] == "/");
+        if (relock) {
+            let res = this.service.LockSync([path]);
+            assert(res[1] == "/");
+        }
         
         callback(String(label), String(secret));
     },
@@ -69,12 +71,12 @@ KeyringConnection.prototype = {
             
             prompt.connectSignal("Completed",
                     Lang.bind(this, function (dismissed, result) {
-                        this._getSecret(path, callback);
+                        this._getSecret(path, true, callback);
                     })
             );
             prompt.PromptSync("");
         } else {
-            this._getSecret(path, callback);
+            this._getSecret(path, false, callback);
         }
     },
     
