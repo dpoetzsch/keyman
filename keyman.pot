@@ -1,0 +1,26 @@
+# Messages of KeyMan - A helper for the gnome keyring
+# Copyright (C) David Poetzsch-Heffter, 2014
+# This file is distributed under the same license as the KeyMan package.
+# David Poetzsch-Heffter <davidpoetzsch@web.de>, 2014.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: davidpoetzsch@web.de\n"
+"POT-Creation-Date: 2014-05-02 15:14+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: extension.js:37
+msgid "KM"
+msgstr ""
+
+#: extension.js:108
+msgid "Search..."
+msgstr ""
