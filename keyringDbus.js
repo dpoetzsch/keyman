@@ -1,56 +1,79 @@
 const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
+const Lang = imports.lang;
 
+// TODO in an extension this might look different
 imports.searchPath.push('.');
 const Interfaces = imports.keyringInterfaces;
 
-let service = new Interfaces.SecretServiceProxy(Gio.DBus.session, 'org.freedesktop.secrets', '/org/freedesktop/secrets');
+const bus = Gio.DBus.session;
+const secretBus = 'org.freedesktop.secrets';
 
-let result = service.OpenSessionSync("plain", GLib.Variant.new('s', ""));
-let sess_out = result[0];
-let session = result[1];
-
-let test_item_path = "/org/freedesktop/secrets/collection/test/1";
-
-let result = service.UnlockSync([test_item_path]);
-let ul_prompt_path = result[1];
-
-function get_secret() {
-    let test_item = new Interfaces.SecretItemProxy(Gio.DBus.session, "org.freedesktop.secrets", test_item_path);
-    
-    //for (let x in test_item) { print(x); }
-    
-    let secret_res = test_item.GetSecretSync(session);
-
-    //for (let x in secret_res[0]) { print(x); }
-    
-    print("Label : " + test_item.Label);
-    print("Secret: " + (secret_res[0][2]));
-    
-    let res = service.LockSync([test_item_path]);
-    print();
-    print(res[0]);
-    print(res[1]);
+function assert(condition) {
+    if (!condition) {
+        // remove this in production code
+        throw "Assertion failed: " + condition;
+    }
 }
 
-function get_secret_handler(dismissed, result) {
-    print(dismissed);
-    print(result);
-    print();
-    get_secret();
+function KeyringConnection() {
+    this._init();
 }
 
-if (ul_prompt_path != "/") {
-    print(ul_prompt_path);
-    let prompt = new Interfaces.SecretPromptProxy(Gio.DBus.session, "org.freedesktop.secrets", ul_prompt_path);
+KeyringConnection.prototype = {
+    _init: function() {
+        this.service = new Interfaces.SecretServiceProxy(bus,
+                secretBus, '/org/freedesktop/secrets');
+
+        let result = this.service.OpenSessionSync("plain",
+                GLib.Variant.new('s', ""));
+        this.session = result[1];
+    },
     
-    //for (let x in prompt) { print(x); }
+    close: function() {
+        let sessionObj = new Interfaces.SecretSessionProxy(bus, secretBus,
+                this.session);
+        sessionObj.CloseSync();
+    },
     
-    prompt.connectSignal("Completed", get_secret_handler)
+    _getSecret: function(path, callback) {
+        let item = new Interfaces.SecretItemProxy(bus, secretBus, path);
+        
+        let secret_res = item.GetSecretSync(this.session);
+
+        let label = item.Label;
+        let secret = secret_res[0][2];
+
+        let res = this.service.LockSync([path]);
+        assert(res[1] == "/");
+        
+        callback(label, secret);
+    },
     
-    prompt.PromptSync("");
-    
-    imports.mainloop.run();
-} else {
-    get_secret();
+    /**
+     * Fetch the label and secret of an item with the specified path.
+     * callback is a function(label, secret) that gets called when the
+     * information is fetched.
+     * If unlocking is needed this will only work if imports.mainloop is
+     * running.
+     */
+    getSecretFromPath: function(path, callback) {
+        let result = this.service.UnlockSync([path]);
+        let ul_prompt_path = result[1];
+        
+        if (ul_prompt_path != "/") {
+            // in this case the keyring needs to be unlocked by the user
+            let prompt = new Interfaces.SecretPromptProxy(bus,
+                    secretBus, ul_prompt_path);
+            
+            prompt.connectSignal("Completed",
+                    Lang.bind(this, function (dismissed, result) {
+                        this._getSecret(path, callback);
+                    })
+            );
+            prompt.PromptSync("");
+        } else {
+            this._getSecret(path, callback);
+        }
+    }
 }

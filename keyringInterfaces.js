@@ -101,3 +101,7 @@ const SecretPromptInterface = <interface name="org.freedesktop.Secret.Prompt">
 </interface>
 const SecretPromptProxy = Gio.DBusProxy.makeProxyWrapper(SecretPromptInterface);
 
+const SecretSessionInterface = <interface  name="org.freedesktop.Secret.Session">
+    <method name="Close" />
+</interface>
+const SecretSessionProxy = Gio.DBusProxy.makeProxyWrapper(SecretSessionInterface);
