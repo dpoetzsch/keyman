@@ -172,5 +172,6 @@ KeyMan.prototype = {
         for (let id in this.timeouts) {
             Mainloop.source_remove(id);
         }
+        this.bookmarks.close()
     }
 }
