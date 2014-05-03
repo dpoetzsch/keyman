@@ -76,6 +76,7 @@ KeyMan.prototype = {
     },
     
     _getSecretCallback: function(label, secret) {
+        this._removeTimeouts();
         Clipboard.set(secret);
         
         // TODO put sleep time into preferences
@@ -188,11 +189,15 @@ KeyMan.prototype = {
     _enable: function() {
     },
 
-    _disable: function() {
-        this.keyring.close()
-        for (let id in this.timeouts) {
-            Mainloop.source_remove(id);
+    _removeTimeouts: function() {
+        while (this.timeouts.length > 0) {
+            Mainloop.source_remove(this.timeouts.pop());
         }
-        this.bookmarks.close()
+    },
+
+    _disable: function() {
+        this.keyring.close();
+        this._removeTimeouts();
+        this.bookmarks.close();
     }
 }
