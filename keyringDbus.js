@@ -6,16 +6,10 @@ const Lang = imports.lang;
 //const Interfaces = imports.keyringInterfaces;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Interfaces = Me.imports.keyringInterfaces;
+const assert = Me.imports.utils.assert;
 
 const bus = Gio.DBus.session;
 const secretBus = 'org.freedesktop.secrets';
-
-function assert(condition) {
-    if (!condition) {
-        // remove this in production code
-        throw "Assertion failed: " + condition;
-    }
-}
 
 function KeyringConnection() {
     this._init();

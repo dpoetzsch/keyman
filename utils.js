@@ -1,5 +1,12 @@
 const GLib = imports.gi.GLib;
 
+function assert(condition) {
+    if (!condition) {
+        // remove this in production code
+        throw "Assertion failed: " + condition;
+    }
+}
+
 function fileExists(path) {
     return GLib.file_test(path, GLib.FileTest.EXISTS)
 }
