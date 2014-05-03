@@ -11,6 +11,10 @@ const assert = Me.imports.utils.assert;
 const bus = Gio.DBus.session;
 const secretBus = 'org.freedesktop.secrets';
 
+function makeItem(label, path) {
+    return {"label":label, "path":path};
+}
+
 function KeyringConnection() {
     this._init();
 }

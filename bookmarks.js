@@ -1,4 +1,5 @@
 const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Keyring = Me.imports.keyringDbus;
 const Utils = Me.imports.utils;
 const assert = Utils.assert;
 
@@ -35,8 +36,8 @@ Bookmarks.prototype = {
         }
     },
     
-    add: function(path) {
-        this.bookmarks.push(path);
+    add: function(label, path) {
+        this.bookmarks.push(Keyring.makeItem(label, path));
     },
     
     remove: function(path) {
