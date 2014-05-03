@@ -89,6 +89,15 @@ KeyMan.prototype = {
                 Lang.bind(this, this._getSecretCallback));
     },
     
+    _createMenuItem: function(item) {
+        let pmi = new PopupMenu.PopupMenuItem(item.label);
+        pmi.connect('activate', Lang.bind(this, function() {
+            this.menu.close();
+            this._copySecret(item.path);
+        }));
+        return pmi;
+    },
+    
     _refresh: function() {
         let keyMenu = this.menu;
         let buttonText = this.buttonText;
@@ -114,12 +123,7 @@ KeyMan.prototype = {
         
         // add bookmarks
         for (let bookmark in this.bookmarks.iterator()) {
-            let item = new PopupMenu.PopupMenuItem(bookmark.label);
-            item.connect('activate', Lang.bind(this, function() {
-                this.menu.close();
-                this._copySecret(bookmark.path);
-            }));
-            this.bookmarksBox.add(item.actor);
+            this.bookmarksBox.add(this._createMenuItem(bookmark).actor);
         }
         
         // Separator
@@ -142,23 +146,30 @@ KeyMan.prototype = {
         entrySearch.connect('key-press-event', Lang.bind(this, function(o, e) {
             let symbol = e.get_key_symbol();
             if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
-                this.menu.close();
+                //this.menu.close();
                 //buttonText.set_text(_("Proc"));
                 let searchStrs = o.get_text().split(/\s+/);
                 let items = this.keyring.getItems(searchStrs);
-                print(items);
+                
+                for (let i in items) {
+                    let item = items[i];
+                    let mi = this._createMenuItem(item);
+                    bottomSection.actor.add_actor(mi.actor);
+                }
+                
+                print(items.map(function(i) i.label));
                 
                 // TODO better feedback to user
-                if (items.length == 1) {
+                /*if (items.length == 1) {
                     this._copySecret(items[0]);
-                }
-                entrySearch.set_text('');
+                }*/
+                //entrySearch.set_text('');
             }
             
         }));
         
         bottomSection.actor.add_actor(this.searchEntry);
-        //bottomSection.actor.add_style_class_name("newTaskSection");
+        //bottomSection.actor.add_style_class_name("searchSection");
         this.mainBox.add_actor(bottomSection.actor);
         keyMenu.box.add(this.mainBox);
     },

@@ -95,16 +95,17 @@ KeyringConnection.prototype = {
         
         for (let i in allItems) {
             let path = allItems[i];
-            let label = this.getLabelFromPath(path).toLowerCase();
+            let label = this.getLabelFromPath(path);
+            let labelLow = label.toLowerCase();
             let isMatch = true;
             for (let j in searchStrs) {
-                if (label.indexOf(searchStrs[j]) == -1) {
+                if (labelLow.indexOf(searchStrs[j]) == -1) {
                     isMatch = false;
                     break;
                 }
             }
             if (isMatch) {
-                matchingItems.push(path);
+                matchingItems.push(makeItem(label, path));
             }
         }
         
