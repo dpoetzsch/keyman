@@ -169,7 +169,7 @@ KeyMan.prototype = {
         }));
         
         bottomSection.actor.add_actor(this.searchEntry);
-        //bottomSection.actor.add_style_class_name("searchSection");
+        bottomSection.actor.add_style_class_name("searchSection");
         this.mainBox.add_actor(bottomSection.actor);
         keyMenu.box.add(this.mainBox);
     },
