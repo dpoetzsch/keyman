@@ -114,11 +114,10 @@ KeyMan.prototype = {
         
         // add bookmarks
         for (let bookmark in this.bookmarks.iterator()) {
-            let label = this.keyring.getLabelFromPath(bookmark);
-            let item = new PopupMenu.PopupMenuItem(label);
+            let item = new PopupMenu.PopupMenuItem(bookmark.label);
             item.connect('activate', Lang.bind(this, function() {
                 this.menu.close();
-                this._copySecret(bookmark);
+                this._copySecret(bookmark.path);
             }));
             this.bookmarksBox.add(item.actor);
         }

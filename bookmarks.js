@@ -1,5 +1,6 @@
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Utils = Me.imports.utils;
+const assert = Utils.assert;
 
 function Bookmarks(file) {
     this._init(file);
@@ -8,19 +9,15 @@ function Bookmarks(file) {
 Bookmarks.prototype = {
     _init: function(dataDir) {
         this.dataDir = dataDir;
-        this.filePath = Utils.joinPaths([dataDir, "bookmarks.lst"]);
+        this.filePath = Utils.joinPaths([dataDir, "bookmarks.json"]);
+        // an array with entries like
+        // {path: "/org/freedesktop/secrets/...", label: "TestItem"}
         this.bookmarks = []
         
         if (Utils.fileExists(this.filePath)) {
             // load contents from file
             let content = Utils.readFromFile(this.filePath);
-            let lines = content.toString().split('\n');
-            for (let i in lines) {
-                let line = lines[i]
-                if (line != "" && line != "\n") {
-                    this.bookmarks.push(line)
-                }
-            }
+            this.bookmarks = JSON.parse(content);
         }
     },
     
@@ -28,7 +25,7 @@ Bookmarks.prototype = {
         // write to file
         if (this.bookmarks.length > 0) {
             Utils.mkdirP(this.dataDir);
-            Utils.writeToFile(this.filePath, this.bookmarks.join("\n") + "\n");
+            Utils.writeToFile(this.filePath, JSON.stringify(this.bookmarks));
         }
     },
     
@@ -43,6 +40,12 @@ Bookmarks.prototype = {
     },
     
     remove: function(path) {
-        this.bookmarks.splice(this.bookmarks.indexOf(path), 1);
+        let idx = 0;
+        while ((idx < this.bookmarks.length) &&
+                (this.bookmarks[idx].path != path)) {
+            idx += 1;
+        }
+        assert(this.bookmarks[idx].path == path);
+        this.bookmarks.splice(idx, 1);
     }
 }
