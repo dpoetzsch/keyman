@@ -98,6 +98,10 @@ KeyMan.prototype = {
         return pmi;
     },
     
+    _clearSearchResults: function() {
+        this.searchResultsBox.destroy_all_children();
+    },
+    
     _refresh: function() {
         let keyMenu = this.menu;
         let buttonText = this.buttonText;
@@ -133,6 +137,9 @@ KeyMan.prototype = {
         // Bottom section: Search
         let bottomSection = new PopupMenu.PopupMenuSection();
         
+        this.searchResultsBox = new St.BoxLayout();
+        this.searchResultsBox.set_vertical(true);
+        
         this.searchEntry = new St.Entry(
         {
             name: "searchEntry",
@@ -146,29 +153,33 @@ KeyMan.prototype = {
         entrySearch.connect('key-press-event', Lang.bind(this, function(o, e) {
             let symbol = e.get_key_symbol();
             if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
+                this._clearSearchResults();
+            
                 //this.menu.close();
                 //buttonText.set_text(_("Proc"));
-                let searchStrs = o.get_text().split(/\s+/);
-                let items = this.keyring.getItems(searchStrs);
+                let searchStrs = o.get_text().trim().split(/\s+/);
+                searchStrs = searchStrs.filter(function(s) s != "");
                 
-                for (let i in items) {
-                    let item = items[i];
-                    let mi = this._createMenuItem(item);
-                    bottomSection.actor.add_actor(mi.actor);
+                if (searchStrs.length > 0) {
+                    let items = this.keyring.getItems(searchStrs);
+                    
+                    if (items.length > 0) {
+                        for (let i in items) {
+                            let item = items[i];
+                            let mi = this._createMenuItem(item);
+                            this.searchResultsBox.add(mi.actor);
+                        }
+                    } else {
+                        let it = new PopupMenu.PopupMenuItem("Nothing found.");
+                        this.searchResultsBox.add(it.actor);
+                    }
                 }
-                
-                print(items.map(function(i) i.label));
-                
-                // TODO better feedback to user
-                /*if (items.length == 1) {
-                    this._copySecret(items[0]);
-                }*/
-                //entrySearch.set_text('');
             }
             
         }));
         
         bottomSection.actor.add_actor(this.searchEntry);
+        bottomSection.actor.add_actor(this.searchResultsBox);
         bottomSection.actor.add_style_class_name("searchSection");
         this.mainBox.add_actor(bottomSection.actor);
         keyMenu.box.add(this.mainBox);
