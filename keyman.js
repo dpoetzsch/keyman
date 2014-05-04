@@ -24,17 +24,13 @@ const key_open = 'open-keyman';    // Schema key for key binding
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
-// KeyManager function
-function KeyMan() {
-    this._init();
-}
-
 // Prototype
-KeyMan.prototype = {
-    __proto__: PanelMenu.Button.prototype,
+const KeyMan = new Lang.Class({
+    Name: "KeyMan",
+    Extends: PanelMenu.Button,
     
     _init: function() {
-        PanelMenu.Button.prototype._init.call(this, St.Align.START);
+        this.parent(St.Align.START);
 
         // connect to keyring
         this.keyring = new KeyringConnection();
@@ -44,8 +40,7 @@ KeyMan.prototype = {
         
         // remember timeouts
         this.timeouts = []
-
-        this.mainBox = null;
+        
         this.buttonText = new St.Label({text:_("KM")});
         this.buttonText.set_style("text-align:center;");
         this.actor.add_actor(this.buttonText);
@@ -72,7 +67,7 @@ KeyMan.prototype = {
             })
         );
         
-        this._refresh();
+        this._createLayout();
     },
     
     _getSecretCallback: function(label, secret) {
@@ -90,8 +85,9 @@ KeyMan.prototype = {
                 Lang.bind(this, this._getSecretCallback));
     },
     
-    _createMenuItem: function(item) {
+    _createSecretMenuItem: function(item) {
         let pmi = new PopupMenu.PopupMenuItem(item.label);
+        for (let x in pmi) print(x);
         pmi.connect('activate', Lang.bind(this, function() {
             this.menu.close();
             this._copySecret(item.path);
@@ -100,46 +96,42 @@ KeyMan.prototype = {
     },
     
     _clearSearchResults: function() {
-        this.searchResultsBox.destroy_all_children();
+        this.searchResultsSection.removeAll();
     },
     
-    _refresh: function() {
-        let keyMenu = this.menu;
-        let buttonText = this.buttonText;
-
-        // Destroy previous box            
-        if (this.mainBox != null)
-            this.mainBox.destroy();
-    
-        // Create main box
-        this.mainBox = new St.BoxLayout();
-        this.mainBox.set_vertical(true);
+    _createLayout: function() {
+        // Create unlock menu
+        let submen = new PopupMenu.PopupSubMenuMenuItem(_("Search..."), true);
+        submen.menu.addAction("blah", function() {Main.notify("FOOOO");});
+        let menit1 = new PopupMenu.PopupMenuItem('something');
+        submen.menu.addMenuItem(menit1);
+        
+        this.menu.addMenuItem(submen);
 
         // Create bookmarked keys box
-        this.bookmarksBox = new St.BoxLayout();
-        this.bookmarksBox.set_vertical(true);
+        this.bookmarksSection = new PopupMenu.PopupMenuSection();
 
         // Create scrollview
-        this.scrollView = new St.ScrollView({style_class: 'vfade',
+        /*this.scrollView = new St.ScrollView({style_class: 'vfade',
                 hscrollbar_policy: Gtk.PolicyType.NEVER,
                 vscrollbar_policy: Gtk.PolicyType.AUTOMATIC});
         this.scrollView.add_actor(this.bookmarksBox);
-        this.mainBox.add_actor(this.scrollView);
+        this.mainBox.add_actor(this.scrollView);*/
         
         // add bookmarks
         for (let bookmark in this.bookmarks.iterator()) {
-            this.bookmarksBox.add(this._createMenuItem(bookmark).actor);
+            this.bookmarksSection.addMenuItem(this._createSecretMenuItem(bookmark));
         }
+        this.menu.addMenuItem(this.bookmarksSection);
         
         // Separator
-        this.Separator = new PopupMenu.PopupSeparatorMenuItem();
-        this.mainBox.add_actor(this.Separator.actor);
+        this.separator = new PopupMenu.PopupSeparatorMenuItem();
+        this.menu.addMenuItem(this.separator);
         
         // Bottom section: Search
         let bottomSection = new PopupMenu.PopupMenuSection();
         
-        this.searchResultsBox = new St.BoxLayout();
-        this.searchResultsBox.set_vertical(true);
+        this.searchResultsSection = new PopupMenu.PopupMenuSection();
         
         this.searchEntry = new St.Entry(
         {
@@ -157,7 +149,6 @@ KeyMan.prototype = {
                 this._clearSearchResults();
             
                 //this.menu.close();
-                //buttonText.set_text(_("Proc"));
                 let searchStrs = o.get_text().trim().split(/\s+/);
                 searchStrs = searchStrs.filter(function(s) s != "");
                 
@@ -167,12 +158,12 @@ KeyMan.prototype = {
                     if (items.length > 0) {
                         for (let i in items) {
                             let item = items[i];
-                            let mi = this._createMenuItem(item);
-                            this.searchResultsBox.add(mi.actor);
+                            let mi = this._createSecretMenuItem(item);
+                            this.searchResultsSection.addMenuItem(mi);
                         }
                     } else {
                         let it = new PopupMenu.PopupMenuItem("Nothing found.");
-                        this.searchResultsBox.add(it.actor);
+                        this.searchResultsSection.add(it);
                     }
                 }
             }
@@ -180,10 +171,9 @@ KeyMan.prototype = {
         }));
         
         bottomSection.actor.add_actor(this.searchEntry);
-        bottomSection.actor.add_actor(this.searchResultsBox);
+        bottomSection.addMenuItem(this.searchResultsSection);
         bottomSection.actor.add_style_class_name("searchSection");
-        this.mainBox.add_actor(bottomSection.actor);
-        keyMenu.box.add(this.mainBox);
+        this.menu.addMenuItem(bottomSection);
     },
     
     _enable: function() {
@@ -200,4 +190,4 @@ KeyMan.prototype = {
         this._removeTimeouts();
         this.bookmarks.close();
     }
-}
+})
