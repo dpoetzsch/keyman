@@ -138,6 +138,9 @@ const KeyMan = new Lang.Class({
             }
         }
         this.menu.addMenuItem(this.collectionsMenu);
+        
+        let separator1 = new PopupMenu.PopupSeparatorMenuItem();
+        this.menu.addMenuItem(separator1);
 
         // Create bookmarked keys box
         this.bookmarksSection = new PopupMenu.PopupMenuSection();
@@ -156,8 +159,8 @@ const KeyMan = new Lang.Class({
         this.menu.addMenuItem(this.bookmarksSection);
         
         // Separator
-        this.separator = new PopupMenu.PopupSeparatorMenuItem();
-        this.menu.addMenuItem(this.separator);
+        let separator2 = new PopupMenu.PopupSeparatorMenuItem();
+        this.menu.addMenuItem(separator2);
         
         // Bottom section: Search
         let bottomSection = new PopupMenu.PopupMenuSection();
