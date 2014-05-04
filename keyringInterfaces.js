@@ -105,3 +105,36 @@ const SecretSessionInterface = <interface  name="org.freedesktop.Secret.Session"
     <method name="Close" />
 </interface>
 const SecretSessionProxy = Gio.DBusProxy.makeProxyWrapper(SecretSessionInterface);
+
+const SecretCollectionInterface =  <interface name="org.freedesktop.Secret.Collection">
+    <property name="Items" type="ao" access="read" />
+    <property name="Label" type="s" access="readwrite" />
+    <property name="Locked" type="s" access="read" />
+    <property name="Created" type="t" access="read" />
+    <property name="Modified" type="t" access="read" />
+    <method name="Delete">
+        <arg name="prompt" type="o" direction="out" />
+    </method>
+    <method name="SearchItems">
+        <arg name="attributes" type="a{ss}" direction="in" />
+        <arg name="results" type="ao" direction="out" />
+    </method>
+    <method name="CreateItem">
+        <arg name="properties" type="a{sv}" direction="in" />
+        <arg name="secret" type="(oayay)" tp:type="Secret" direction="in" />
+        <arg name="replace" type="b" direction="in" />
+        <arg name="item" type="o" direction="out" />
+        <arg name="prompt" type="o" direction="out" />
+    </method>
+    <signal name="ItemCreated">
+        <arg name="item" type="o" />
+    </signal>
+    <signal name="ItemDeleted">
+        <arg name="item" type="o" />
+    </signal>
+    <signal name="ItemChanged">
+        <arg name="item" type="o" />
+    </signal>
+</interface>
+const SecretCollectionProxy = Gio.DBusProxy.makeProxyWrapper(SecretCollectionInterface);
+

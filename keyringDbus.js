@@ -81,11 +81,17 @@ KeyringConnection.prototype = {
     /**
      * Fetch the label of an item with the specified path.
      */
-    getLabelFromPath: function(path) {
+    _getItemLabelFromPath: function(path) {
         let item = new Interfaces.SecretItemProxy(bus, secretBus, path);
         return item.Label;
     },
     
+    /**
+     * Return all secret items that match a number of search strings.
+     * @arg searchStrs An array of strings that must be contained in the
+     *                 label of matching secret items
+     * @return An array of matching secret items (see makeItem for details)
+     */
     getItems: function(searchStrs) {
         searchStrs.map(function(s) s.toLowerCase());
     
@@ -95,7 +101,7 @@ KeyringConnection.prototype = {
         
         for (let i in allItems) {
             let path = allItems[i];
-            let label = this.getLabelFromPath(path);
+            let label = this._getItemLabelFromPath(path);
             let labelLow = label.toLowerCase();
             let isMatch = true;
             for (let j in searchStrs) {
@@ -110,5 +116,15 @@ KeyringConnection.prototype = {
         }
         
         return matchingItems;
+    }
+    
+    getCollections: function() {
+        let res = []
+        for (let i in this.service.Collections) {
+            let path = this.service.Collections[i];
+            let label = new Interfaces.SecretCollectionProxy(bus, secretBus, path);
+            res.push(makeItem(label, path));
+        }
+        return res;
     }
 }
