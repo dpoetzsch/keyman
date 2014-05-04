@@ -109,7 +109,7 @@ const SecretSessionProxy = Gio.DBusProxy.makeProxyWrapper(SecretSessionInterface
 const SecretCollectionInterface =  <interface name="org.freedesktop.Secret.Collection">
     <property name="Items" type="ao" access="read" />
     <property name="Label" type="s" access="readwrite" />
-    <property name="Locked" type="s" access="read" />
+    <property name="Locked" type="b" access="read" />
     <property name="Created" type="t" access="read" />
     <property name="Modified" type="t" access="read" />
     <method name="Delete">

@@ -24,7 +24,32 @@ const key_open = 'open-keyman';    // Schema key for key binding
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
-// Prototype
+const CollectionItem = new Lang.Class({
+    Name: "CollectionItem",
+    Extends: PopupMenu.PopupSwitchMenuItem,
+    
+    _init: function(keyring, collection) {
+        this.parent(collection.label, !collection.locked);
+        
+        this.keyring = keyring;
+        this.collection = collection;
+        
+        this.connect('activate', Lang.bind(this, this._toggle));
+    },
+    
+    _toggle: function() {
+        if (this.collection.locked) {
+            this.keyring.unlockObject(this.collection.path,
+                Lang.bind(this, function(wasLockedBefore) {
+                    this.collection.locked = false;
+                }));
+        } else {
+            this.keyring.lockObject(this.collection.path);
+            this.collection.locked = true;
+        }
+    }
+})
+
 const KeyMan = new Lang.Class({
     Name: "KeyMan",
     Extends: PanelMenu.Button,
@@ -100,14 +125,19 @@ const KeyMan = new Lang.Class({
     
     _createLayout: function() {
         // Create unlock menu
-        let submen = new PopupMenu.PopupSubMenuMenuItem(_("Keyrings"), true);
+        this.collectionsMenu = new PopupMenu.PopupSubMenuMenuItem(
+            _("Keyrings"), true);
         
-        submen.menu.addAction("blah", function() {Main.notify("FOOOO");});
-        submen.menu.addAction("bar", function() {Main.notify("BAR");});
-        let menit1 = new PopupMenu.PopupMenuItem('something');
-        submen.menu.addMenuItem(menit1);
-        
-        this.menu.addMenuItem(submen);
+        // TODO watch for changes
+        let collections = this.keyring.getCollections();
+        for (let i in collections) {
+            let col = collections[i];
+            if (col.path != "/org/freedesktop/secrets/collection/session") {
+                this.collectionsMenu.menu.addMenuItem(
+                    new CollectionItem(this.keyring, col));
+            }
+        }
+        this.menu.addMenuItem(this.collectionsMenu);
 
         // Create bookmarked keys box
         this.bookmarksSection = new PopupMenu.PopupMenuSection();

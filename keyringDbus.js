@@ -15,11 +15,9 @@ function makeItem(label, path) {
     return {"label":label, "path":path};
 }
 
-function KeyringConnection() {
-    this._init();
-}
-
-KeyringConnection.prototype = {
+const KeyringConnection = new Lang.Class({
+    Name: "KeyringConnection",
+    
     _init: function() {
         this.service = new Interfaces.SecretServiceProxy(bus,
                 secretBus, '/org/freedesktop/secrets');
@@ -59,6 +57,17 @@ KeyringConnection.prototype = {
      * running.
      */
     getSecretFromPath: function(path, callback) {
+        this.unlockObject(path, Lang.bind(this, function(wasLockedBefore) {
+            this._getSecret(path, wasLockedBefore, callback);
+        }));
+    },
+    
+    /**
+     * Unlock an object.
+     * callback is a function(wasLockedBefore) called with a boolean
+     * value that indicates wether the object was locked before.
+     */
+    unlockObject: function(path, callback) {
         let result = this.service.UnlockSync([path]);
         let ul_prompt_path = result[1];
         
@@ -68,14 +77,18 @@ KeyringConnection.prototype = {
                     secretBus, ul_prompt_path);
             
             prompt.connectSignal("Completed",
-                    Lang.bind(this, function (dismissed, result) {
-                        this._getSecret(path, true, callback);
-                    })
-            );
+                Lang.bind(this, function (dismissed, result) {
+                    callback(true);
+                }));
             prompt.PromptSync("");
         } else {
-            this._getSecret(path, false, callback);
+            callback(false);
         }
+    },
+    
+    lockObject: function(path) {
+        let res = this.service.LockSync([path]);
+        assert(res[1] == "/");
     },
     
     /**
@@ -118,13 +131,19 @@ KeyringConnection.prototype = {
         return matchingItems;
     },
     
+    /**
+     * Return all collections as items (see makeItem for details).
+     * Each collection item additionally has a boolean flag locked.
+     */
     getCollections: function() {
         let res = []
         for (let i in this.service.Collections) {
             let path = this.service.Collections[i];
-            let label = new Interfaces.SecretCollectionProxy(bus, secretBus, path);
-            res.push(makeItem(label, path));
+            let col = new Interfaces.SecretCollectionProxy(bus, secretBus, path);
+            let item = makeItem(col.Label, path);
+            item.locked = col.Locked;
+            res.push(item);
         }
         return res;
     }
-}
+})

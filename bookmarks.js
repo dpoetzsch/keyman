@@ -1,13 +1,13 @@
+const Lang = imports.lang;
+
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Keyring = Me.imports.keyringDbus;
 const Utils = Me.imports.utils;
 const assert = Utils.assert;
 
-function Bookmarks(file) {
-    this._init(file);
-}
+const Bookmarks = new Lang.Class({
+    Name: "Bookmarks",
 
-Bookmarks.prototype = {
     _init: function(dataDir) {
         this.dataDir = dataDir;
         this.filePath = Utils.joinPaths([dataDir, "bookmarks.json"]);
@@ -49,4 +49,4 @@ Bookmarks.prototype = {
         assert(this.bookmarks[idx].path == path);
         this.bookmarks.splice(idx, 1);
     }
-}
+})
