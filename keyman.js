@@ -87,7 +87,6 @@ const KeyMan = new Lang.Class({
     
     _createSecretMenuItem: function(item) {
         let pmi = new PopupMenu.PopupMenuItem(item.label);
-        for (let x in pmi) print(x);
         pmi.connect('activate', Lang.bind(this, function() {
             this.menu.close();
             this._copySecret(item.path);
@@ -101,8 +100,10 @@ const KeyMan = new Lang.Class({
     
     _createLayout: function() {
         // Create unlock menu
-        let submen = new PopupMenu.PopupSubMenuMenuItem(_("Search..."), true);
+        let submen = new PopupMenu.PopupSubMenuMenuItem(_("Keyrings"), true);
+        
         submen.menu.addAction("blah", function() {Main.notify("FOOOO");});
+        submen.menu.addAction("bar", function() {Main.notify("BAR");});
         let menit1 = new PopupMenu.PopupMenuItem('something');
         submen.menu.addMenuItem(menit1);
         
