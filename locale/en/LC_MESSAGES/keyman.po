@@ -24,3 +24,6 @@ msgstr "KM"
 #: extension.js:108
 msgid "Search..."
 msgstr "Search..."
+
+msgid "Nothing found."
+msgstr "Nothing found."

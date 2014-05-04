@@ -17,10 +17,14 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:37
+#: keyman.js:44
 msgid "KM"
 msgstr ""
 
-#: extension.js:108
+#: keyman.js:139
 msgid "Search..."
+msgstr ""
+
+#: keyman.js:165
+msgid "Nothing found."
 msgstr ""

@@ -162,8 +162,8 @@ const KeyMan = new Lang.Class({
                             this.searchResultsSection.addMenuItem(mi);
                         }
                     } else {
-                        let it = new PopupMenu.PopupMenuItem("Nothing found.");
-                        this.searchResultsSection.add(it);
+                        let it = new PopupMenu.PopupMenuItem(_("Nothing found."));
+                        this.searchResultsSection.addMenuItem(it);
                     }
                 }
             }
