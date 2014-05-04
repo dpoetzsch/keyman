@@ -121,7 +121,7 @@ const SecretCollectionInterface =  <interface name="org.freedesktop.Secret.Colle
     </method>
     <method name="CreateItem">
         <arg name="properties" type="a{sv}" direction="in" />
-        <arg name="secret" type="(oayay)" tp:type="Secret" direction="in" />
+        <arg name="secret" type="(oayay)" direction="in" />
         <arg name="replace" type="b" direction="in" />
         <arg name="item" type="o" direction="out" />
         <arg name="prompt" type="o" direction="out" />

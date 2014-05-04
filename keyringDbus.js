@@ -116,7 +116,7 @@ KeyringConnection.prototype = {
         }
         
         return matchingItems;
-    }
+    },
     
     getCollections: function() {
         let res = []
