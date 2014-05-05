@@ -133,8 +133,10 @@ const KeyMan = new Lang.Class({
         for (let i in collections) {
             let col = collections[i];
             if (col.path != "/org/freedesktop/secrets/collection/session") {
-                this.collectionsMenu.menu.addMenuItem(
-                    new CollectionItem(this.keyring, col));
+                // we don't add the item via addMenuItem because we do not
+                // want the menu to close if the item is clicked
+                this.collectionsMenu.menu.box.add(
+                    new CollectionItem(this.keyring, col).actor);
             }
         }
         this.menu.addMenuItem(this.collectionsMenu);
