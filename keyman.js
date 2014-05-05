@@ -12,7 +12,7 @@ const _ = imports.gettext.domain('keyman').gettext;
 
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Clipboard = Me.imports.clipboard;
-const Bookmarks = Me.imports.bookmarks.Bookmarks;
+const Data = Me.imports.data;
 const KeyringConnection = Me.imports.keyringDbus.KeyringConnection;
 const Utils = Me.imports.utils;
 //const mySettings = Utils.getSettings();
@@ -23,6 +23,7 @@ const KEY_ENTER = 65421;
 const key_open = 'open-keyman';    // Schema key for key binding
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
+const historyMaxSize = 5;
 
 const CollectionItem = new Lang.Class({
     Name: "CollectionItem",
@@ -60,8 +61,8 @@ const KeyMan = new Lang.Class({
         // connect to keyring
         this.keyring = new KeyringConnection();
         
-        // initialize bookmarks
-        this.bookmarks = new Bookmarks(dataDir);
+        // initialize history
+        this.history = new Data.History(dataDir, historyMaxSize);
         
         // remember timeouts
         this.timeouts = []
@@ -113,10 +114,19 @@ const KeyMan = new Lang.Class({
     _createSecretMenuItem: function(item) {
         let pmi = new PopupMenu.PopupMenuItem(item.label);
         pmi.connect('activate', Lang.bind(this, function() {
-            this.menu.close();
             this._copySecret(item.path);
+            this.history.add(item);
+            this._populateHistoryMenu();
         }));
         return pmi;
+    },
+    
+    _populateHistoryMenu: function() {
+        this.historySection.removeAll();
+        
+        for (let elem in this.history.iterator()) {
+            this.historySection.addMenuItem(this._createSecretMenuItem(elem));
+        }
     },
     
     _clearSearchResults: function() {
@@ -144,21 +154,10 @@ const KeyMan = new Lang.Class({
         let separator1 = new PopupMenu.PopupSeparatorMenuItem();
         this.menu.addMenuItem(separator1);
 
-        // Create bookmarked keys box
-        this.bookmarksSection = new PopupMenu.PopupMenuSection();
-
-        // Create scrollview
-        /*this.scrollView = new St.ScrollView({style_class: 'vfade',
-                hscrollbar_policy: Gtk.PolicyType.NEVER,
-                vscrollbar_policy: Gtk.PolicyType.AUTOMATIC});
-        this.scrollView.add_actor(this.bookmarksBox);
-        this.mainBox.add_actor(this.scrollView);*/
-        
-        // add bookmarks
-        for (let bookmark in this.bookmarks.iterator()) {
-            this.bookmarksSection.addMenuItem(this._createSecretMenuItem(bookmark));
-        }
-        this.menu.addMenuItem(this.bookmarksSection);
+        // Create history section
+        this.historySection = new PopupMenu.PopupMenuSection();
+        this._populateHistoryMenu();
+        this.menu.addMenuItem(this.historySection);
         
         // Separator
         let separator2 = new PopupMenu.PopupSeparatorMenuItem();
@@ -224,6 +223,6 @@ const KeyMan = new Lang.Class({
     _disable: function() {
         this.keyring.close();
         this._removeTimeouts();
-        this.bookmarks.close();
+        this.history.close();
     }
 })
