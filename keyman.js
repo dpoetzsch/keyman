@@ -115,8 +115,10 @@ const KeyMan = new Lang.Class({
         let pmi = new PopupMenu.PopupMenuItem(item.label);
         pmi.connect('activate', Lang.bind(this, function() {
             this._copySecret(item.path);
+            this._clearSearchResults();
             this.history.add(item);
             this._populateHistoryMenu();
+            this.menu.close();
         }));
         return pmi;
     },
