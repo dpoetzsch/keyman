@@ -39,7 +39,10 @@ const History = new Lang.Class({
         // an array with entries like
         // {path: "/org/freedesktop/secrets/...", label: "TestItem"}
         this.history = this._load([]);
-        this.maxSize = Settings.SETTINGS.get_int(Settings.KEY_HISTORY_SIZE);
+    },
+    
+    getMaxSize: function() {
+        return Settings.SETTINGS.get_int(Settings.KEY_HISTORY_SIZE);
     },
     
     close: function() {
@@ -55,9 +58,15 @@ const History = new Lang.Class({
         }
     },
     
+    trimToMaxSize: function() {
+        let maxSize = this.getMaxSize();
+        while (this.history.length > maxSize) {
+            this.history.pop();
+        }
+        assert(this.history.length <= maxSize);
+    },
+    
     add: function(item) {
-        assert(this.history.length <= this.maxSize);
-        
         let idx = 0;
         while ((idx < this.history.length) &&
                 (this.history[idx].path != item.path)) {
@@ -66,7 +75,7 @@ const History = new Lang.Class({
         
         if (idx == this.history.length) {
             // not found -> add new
-            while (this.history.length >= this.maxSize) {
+            while (this.history.length >= this.getMaxSize()) {
                 this.history.pop();
             }
             this.history.unshift(item);
@@ -74,9 +83,8 @@ const History = new Lang.Class({
             // only move it up
             this.history.splice(idx, 1);
             this.history.unshift(item);
+            this.trimToMaxSize();
         }
-        
-        assert(this.history.length <= this.maxSize);
     }
 })
 
