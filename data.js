@@ -3,6 +3,7 @@ const Lang = imports.lang;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Keyring = Me.imports.keyringDbus;
 const Utils = Me.imports.utils;
+const Settings = Me.imports.settings;
 const assert = Utils.assert;
 
 const DataManager = new Lang.Class({
@@ -32,13 +33,13 @@ const History = new Lang.Class({
     Name: "History",
     Extends: DataManager,
 
-    _init: function(dataDir, maxSize) {
+    _init: function(dataDir) {
         this.parent(dataDir, "history.json");
         
         // an array with entries like
         // {path: "/org/freedesktop/secrets/...", label: "TestItem"}
         this.history = this._load([]);
-        this.maxSize = maxSize;
+        this.maxSize = Settings.SETTINGS.get_int(Settings.KEY_HISTORY_SIZE);
     },
     
     close: function() {

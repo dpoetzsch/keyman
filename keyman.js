@@ -15,6 +15,7 @@ const Clipboard = Me.imports.clipboard;
 const Data = Me.imports.data;
 const KeyringConnection = Me.imports.keyringDbus.KeyringConnection;
 const Utils = Me.imports.utils;
+const Settings = Me.imports.settings;
 //const mySettings = Utils.getSettings();
 
 const MAX_LENGTH = 100;
@@ -23,7 +24,6 @@ const KEY_ENTER = 65421;
 const key_open = 'open-keyman';    // Schema key for key binding
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
-const historyMaxSize = 5;
 
 const CollectionItem = new Lang.Class({
     Name: "CollectionItem",
@@ -62,7 +62,7 @@ const KeyMan = new Lang.Class({
         this.keyring = new KeyringConnection();
         
         // initialize history
-        this.history = new Data.History(dataDir, historyMaxSize);
+        this.history = new Data.History(dataDir);
         
         // remember timeouts
         this.timeouts = []
@@ -100,8 +100,9 @@ const KeyMan = new Lang.Class({
         this._removeTimeouts();
         Clipboard.set(secret);
         
-        // TODO put sleep time into preferences
-        this.timeouts.push(Mainloop.timeout_add(5000, function() {
+        let duration = Settings.SETTINGS.get_int(
+            Settings.KEY_CLIPBOARD_DURATION);
+        this.timeouts.push(Mainloop.timeout_add(duration, function() {
             Clipboard.empty();
         }));
     },

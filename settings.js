@@ -8,6 +8,9 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const SETTINGS = getSettings();
 
+const KEY_CLIPBOARD_DURATION = "clipboard-duration";
+const KEY_HISTORY_SIZE = "history-size";
+
 /**
  * getSettings:
  * @schema: (optional): the GSettings schema id

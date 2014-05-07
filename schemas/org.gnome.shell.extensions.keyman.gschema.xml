@@ -3,9 +3,15 @@
 
   <schema path="/org/gnome/shell/extensions/keyman/" id="org.gnome.shell.extensions.keyman">
 
-    <key type="i" name="clipboard-time">
+    <key type="i" name="clipboard-duration">
         <default>5000</default>
-        <summary>The time a secret stays in the clipboard in miliseconds.</summary>
+        <summary>The amount of time a secret stays in the clipboard in miliseconds.</summary>
+        <!--<description></description>-->
+    </key>
+
+    <key type="i" name="history-size">
+        <default>5</default>
+        <summary>The maximum size of items stored in the history of copied secrets.</summary>
         <!--<description></description>-->
     </key>
 
