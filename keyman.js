@@ -6,7 +6,6 @@ const Main = imports.ui.main;
 const Lang = imports.lang;
 const Mainloop = imports.mainloop;
 const GLib = imports.gi.GLib;
-//const Meta = imports.gi.Meta;
 
 const _ = imports.gettext.domain('keyman').gettext;
 
@@ -16,12 +15,11 @@ const Data = Me.imports.data;
 const KeyringConnection = Me.imports.keyringDbus.KeyringConnection;
 const Utils = Me.imports.utils;
 const Settings = Me.imports.settings;
-//const mySettings = Utils.getSettings();
 
 const MAX_LENGTH = 100;
 const KEY_RETURN = 65293;
 const KEY_ENTER = 65421;
-const key_open = 'open-keyman';    // Schema key for key binding
+//const keyOpen = 'open-keyman';    // Schema key for key binding
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
@@ -89,25 +87,16 @@ const KeyMan = new Lang.Class({
         // remember timeouts
         this.timeouts = []
         
-        this.buttonText = new St.Label({text:_("KM")});
-        
         let icon = new St.Icon({
             icon_name: 'dialog-password',
             style_class: 'system-status-icon',
             reactive: true,
             track_hover: true
         });
-        
-        this.buttonText.set_style("text-align:center;");
-        //this.actor.add_actor(this.buttonText);
         this.actor.add_actor(icon);
-        //this.buttonText.get_parent().add_style_class_name("panelButtonWidth");
         
         // Add keybinding
-        /*global.display.add_keybinding
-        (
-            key_open,
-            mySettings,
+        /*global.display.add_keybinding(keyOpen, mySettings,
             Meta.KeyBindingFlags.NONE,
             Lang.bind(this, function() { this.menu.open(); })
         );*/
