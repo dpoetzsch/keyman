@@ -31,3 +31,10 @@ msgstr ""
 
 msgid "Keyrings"
 msgstr ""
+
+# Preferences
+msgid "Amount of time passwords stay in clipboard (milis):"
+msgstr ""
+
+msgid "Number of entries in history:"
+msgstr ""

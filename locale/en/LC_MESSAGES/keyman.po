@@ -30,3 +30,10 @@ msgstr "Nothing found."
 
 msgid "Keyrings"
 msgstr "Keyrings"
+
+# Preferences
+msgid "Amount of time passwords stay in clipboard (milis):"
+msgstr "Amount of time passwords stay in clipboard (milis):"
+
+msgid "Number of entries in history:"
+msgstr "Number of entries in history:"
