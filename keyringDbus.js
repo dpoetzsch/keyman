@@ -145,5 +145,20 @@ const KeyringConnection = new Lang.Class({
             res.push(item);
         }
         return res;
+    },
+    
+    /**
+     * @callback is called whenever a collection is created, deleted or changed.
+     */
+    connectCollectionChangedSignal: function(callback) {
+        this.service.connectSignal("CollectionCreated", function (collection) {
+            callback();
+        });
+        this.service.connectSignal("CollectionDeleted", function (collection) {
+            callback();
+        });
+        this.service.connectSignal("CollectionChanged", function (collection) {
+            callback();
+        });
     }
 })

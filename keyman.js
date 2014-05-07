@@ -136,12 +136,9 @@ const KeyMan = new Lang.Class({
         this.searchResultsSection.removeAll();
     },
     
-    _createLayout: function() {
-        // Create unlock menu
-        this.collectionsMenu = new PopupMenu.PopupSubMenuMenuItem(
-            _("Keyrings"), true);
+    _populateCollectionsMenu: function() {
+        this.collectionsMenu.menu.removeAll();
         
-        // TODO watch for changes
         let collections = this.keyring.getCollections();
         for (let i in collections) {
             let col = collections[i];
@@ -152,7 +149,18 @@ const KeyMan = new Lang.Class({
                     new CollectionItem(this.keyring, col).actor);
             }
         }
+    },
+    
+    _createLayout: function() {
+        // Create unlock menu
+        this.collectionsMenu = new PopupMenu.PopupSubMenuMenuItem(
+            _("Keyrings"), true);
+        this._populateCollectionsMenu();
         this.menu.addMenuItem(this.collectionsMenu);
+        
+        // when collections change refill collections menu
+        this.keyring.connectCollectionChangedSignal(
+            Lang.bind(this, this._populateCollectionsMenu));
         
         let separator1 = new PopupMenu.PopupSeparatorMenuItem();
         this.menu.addMenuItem(separator1);
