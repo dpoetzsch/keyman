@@ -28,7 +28,6 @@ function enable() {
     keyman = new KeyMan();
     keyman._enable();
     Main.panel.addToStatusArea('keyman', keyman);
-    //Main.notify("Ok");
 }
 
 function disable() {

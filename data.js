@@ -95,6 +95,9 @@ const History = new Lang.Class({
     }
 })
 
+// This is currently unused because history replaces bookmarks for now.
+// If I somehow figure out how to program drag&drop and context menus for menu
+// items it will be used again.
 const Bookmarks = new Lang.Class({
     Name: "Bookmarks",
     Extends: DataManager,
