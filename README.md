@@ -1,4 +1,4 @@
-keyman
+KeyMan
 ======
 
 A gnome shell extension to access the keyring in a convenient way.
