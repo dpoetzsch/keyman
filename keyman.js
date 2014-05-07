@@ -27,15 +27,37 @@ const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
 const CollectionItem = new Lang.Class({
     Name: "CollectionItem",
-    Extends: PopupMenu.PopupSwitchMenuItem,
+    Extends: PopupMenu.PopupMenuItem,
     
     _init: function(keyring, collection) {
-        this.parent(collection.label, !collection.locked);
+        this.parent(collection.label);
         
         this.keyring = keyring;
         this.collection = collection;
         
+        this._lockedIcon = new St.Icon({
+            icon_name: "changes-prevent-symbolic",
+            style_class: 'system-status-icon',
+            reactive: true,
+            track_hover: true
+        });
+        this._unlockedIcon = new St.Icon({
+            icon_name: "changes-allow-symbolic",
+            style_class: 'system-status-icon',
+            reactive: true,
+            track_hover: true
+        });
+        
+        this._addIcon();
         this.connect('activate', Lang.bind(this, this._toggle));
+    },
+    
+    _addIcon: function() {
+        if (this.collection.locked) {
+            this.actor.add_actor(this._lockedIcon);
+        } else {
+            this.actor.add_actor(this._unlockedIcon);
+        }
     },
     
     _toggle: function() {
@@ -68,9 +90,18 @@ const KeyMan = new Lang.Class({
         this.timeouts = []
         
         this.buttonText = new St.Label({text:_("KM")});
+        
+        let icon = new St.Icon({
+            icon_name: 'dialog-password',
+            style_class: 'system-status-icon',
+            reactive: true,
+            track_hover: true
+        });
+        
         this.buttonText.set_style("text-align:center;");
-        this.actor.add_actor(this.buttonText);
-        this.buttonText.get_parent().add_style_class_name("panelButtonWidth");
+        //this.actor.add_actor(this.buttonText);
+        this.actor.add_actor(icon);
+        //this.buttonText.get_parent().add_style_class_name("panelButtonWidth");
         
         // Add keybinding
         /*global.display.add_keybinding
