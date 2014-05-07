@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DEST=~/.local/share/gnome-shell/extensions/KeyMan@sunlight
+DEST=~/.local/share/gnome-shell/extensions/keyman@dpoetzsch.github.com
 
 # compile locales
 echo "Compiling locales..."
