@@ -1,4 +1,9 @@
-/* -*- mode: js2; js2-basic-offset: 4; indent-tabs-mode: nil -*- */
+/*
+ * KeyMan - A gnome shell extension to access the keyring in a convenient way
+ * (c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>
+ * This file is distributed under the same licence as the KeyMan package.
+ * See file LICENSE for details.
+ */
 
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;

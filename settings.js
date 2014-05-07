@@ -1,5 +1,10 @@
 /*
- * Modified code from text-translator extension
+ * KeyMan - A gnome shell extension to access the keyring in a convenient way
+ * (c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>
+ * This file is distributed under the same licence as the KeyMan package.
+ * See file LICENSE for details.
+ *
+ * This code was forked from the text-translator extension.
  */
 
 const Gio = imports.gi.Gio;

@@ -1,7 +1,7 @@
-# Messages of KeyMan - A helper for the gnome keyring
-# Copyright (C) David Poetzsch-Heffter, 2014
-# This file is distributed under the same license as the KeyMan package.
-# David Poetzsch-Heffter <davidpoetzsch@web.de>, 2014.
+# KeyMan - A gnome shell extension to access the keyring in a convenient way
+# (c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>
+# This file is distributed under the same licence as the KeyMan package.
+# See file LICENSE for details.
 #
 #, fuzzy
 msgid ""
