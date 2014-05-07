@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+
+  <schema path="/org/gnome/shell/extensions/keyman/" id="org.gnome.shell.extensions.keyman">
+
+    <key type="i" name="clipboard-time">
+        <default>5000</default>
+        <summary>The time a secret stays in the clipboard in miliseconds.</summary>
+        <!--<description></description>-->
+    </key>
+
+  </schema>
+</schemalist>
