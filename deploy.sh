@@ -1,7 +1,7 @@
 #!/bin/sh
 
 MODE="deploy"
-if [ $1 = "zip" ]; then
+if [ "$1" = "zip" ]; then
     MODE="zip"
 fi
 
