@@ -28,6 +28,9 @@ msgid "Keyrings"
 msgstr "Keyrings"
 
 # Preferences
+msgid "Use primary clipboard (mousekey 3 to insert) instead of default (Strg+V to insert)"
+msgstr "Use primary clipboard (mousekey 3 to insert) instead of default (Strg+V to insert)"
+
 msgid "Amount of time passwords stay in clipboard (milis):"
 msgstr "Amount of time passwords stay in clipboard (milis):"
 

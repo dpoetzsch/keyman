@@ -13,6 +13,7 @@ const Me = imports.misc.extensionUtils.getCurrentExtension();
 
 const SETTINGS = getSettings();
 
+const KEY_PRIMARY_CLIPBOARD = "primary-clipboard"
 const KEY_CLIPBOARD_DURATION = "clipboard-duration";
 const KEY_HISTORY_SIZE = "history-size";
 

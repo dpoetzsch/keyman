@@ -7,8 +7,15 @@
 
 const St = imports.gi.St;
 
+const Me = imports.misc.extensionUtils.getCurrentExtension();
+const Settings = Me.imports.settings;
+
 function set(text) {
-    St.Clipboard.get_default().set_text(St.ClipboardType.CLIPBOARD, text);
+    let primClipboard = Settings.SETTINGS.get_boolean(
+        Settings.KEY_PRIMARY_CLIPBOARD);
+    let clipboard = primClipboard ? St.ClipboardType.PRIMARY
+                                  : St.ClipboardType.CLIPBOARD;
+    St.Clipboard.get_default().set_text(clipboard, text);
 }
 
 function empty() {

@@ -3,6 +3,12 @@
 
   <schema path="/org/gnome/shell/extensions/keyman/" id="org.gnome.shell.extensions.keyman">
 
+    <key type="b" name="primary-clipboard">
+        <default>false</default>
+        <summary>If true, the primary clipboard (mousekey 3) is used instead of the default clipboard (Strg+V)</summary>
+        <!--<description></description>-->
+    </key>
+
     <key type="i" name="clipboard-duration">
         <default>5000</default>
         <summary>The amount of time a secret stays in the clipboard in miliseconds.</summary>

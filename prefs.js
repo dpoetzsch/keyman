@@ -31,6 +31,15 @@ const KeyManSettingsWidget = new GObject.Class({
         this.parent(params);
         this.margin = 10;
         this.orientation = Gtk.Orientation.VERTICAL;
+        
+        let primClipboardCheck = new Gtk.CheckButton({
+            label: _("Use primary clipboard (mousekey 3 to insert) instead of default (Strg+V to insert)"),
+            margin_bottom: 10,
+            margin_top: 5
+        });
+        Settings.SETTINGS.bind(Settings.KEY_PRIMARY_CLIPBOARD, primClipboardCheck,
+            'active', Gio.SettingsBindFlags.DEFAULT);
+        this.add(primClipboardCheck);
 
         let durationLabel = new Gtk.Label({
             label: _("Amount of time passwords stay in clipboard (milis):"),
