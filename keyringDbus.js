@@ -32,9 +32,17 @@ const KeyringConnection = new Lang.Class({
         let result = this.service.OpenSessionSync("plain",
                 GLib.Variant.new('s', ""));
         this.session = result[1];
+        
+        this.signalConnections = []; // array of tuples [signalProvider, signalID]
     },
     
     close: function() {
+        // disconnect from all signals
+        for (let conId in this.signalConnections) {
+            let con = this.signalConnections[conId];
+            con[0].disconnectSignal(con[1]);
+        }
+    
         let sessionObj = new Interfaces.SecretSessionProxy(bus, secretBus,
                 this.session);
         sessionObj.CloseSync();
@@ -83,10 +91,11 @@ const KeyringConnection = new Lang.Class({
             let prompt = new Interfaces.SecretPromptProxy(bus,
                     secretBus, ul_prompt_path);
             
-            prompt.connectSignal("Completed",
-                Lang.bind(this, function (dismissed, result) {
-                    callback(true);
-                }));
+            this.signalConnections.push([prompt,
+                prompt.connectSignal("Completed",
+                    Lang.bind(this, function (dismissed, result) {
+                        callback(true);
+                    }))]);
             prompt.PromptSync("");
         } else {
             callback(false);
@@ -158,14 +167,20 @@ const KeyringConnection = new Lang.Class({
      * @callback is called whenever a collection is created, deleted or changed.
      */
     connectCollectionChangedSignal: function(callback) {
-        this.service.connectSignal("CollectionCreated", function (collection) {
-            callback();
-        });
-        this.service.connectSignal("CollectionDeleted", function (collection) {
-            callback();
-        });
-        this.service.connectSignal("CollectionChanged", function (collection) {
-            callback();
-        });
+        this.signalConnections.push([this.service,
+            this.service.connectSignal("CollectionCreated", function (collection) {
+                callback();
+            })
+        ]);
+        this.signalConnections.push([this.service,
+            this.service.connectSignal("CollectionDeleted", function (collection) {
+                callback();
+            })
+        ]);
+        this.signalConnections.push([this.service,
+            this.service.connectSignal("CollectionChanged", function (collection) {
+                callback();
+            })
+        ]);
     }
 })
