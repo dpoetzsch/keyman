@@ -24,7 +24,7 @@ if [ $MODE = "deploy" ]; then
 
     echo "Removing old instance..."
     rm -r $DEST
-    mkdir $DEST
+    mkdir -p $DEST
 
     echo "Copying content..."
     cp -a $FILES $DEST/
