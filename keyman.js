@@ -144,13 +144,13 @@ const KeyMan = new Lang.Class({
     
     _createSecretMenuItem: function(item) {
         let pmi = new PopupMenu.PopupMenuItem(item.label);
-        pmi.connect('activate', Lang.bind(this, function() {
+        pmi.connect('activate', () => {
             this._copySecret(item.path);
             this._clearSearchResults();
             this.history.add(item);
             this._populateHistoryMenu();
             this.menu.close();
-        }));
+        });
         return pmi;
     },
     
@@ -208,11 +208,13 @@ const KeyMan = new Lang.Class({
         let bottomSection = new PopupMenu.PopupMenuSection();
         
         this.searchResultsSection = new PopupMenu.PopupMenuSection();
+
+        const searchHint = _("Search...")
         
         this.searchEntry = new St.Entry(
         {
             name: "searchEntry",
-            hint_text: _("Search..."),
+            hint_text: searchHint,
             track_hover: true,
             can_focus: true
         });
@@ -240,7 +242,7 @@ const KeyMan = new Lang.Class({
                         this._updateSearchResults(text1);
                     }
                 })
-            } else {
+            } else if (text1 !== searchHint) {
                 this._updateSearchResults(text1);
             }
         });
