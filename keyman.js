@@ -219,37 +219,59 @@ const KeyMan = new Lang.Class({
         
         let entrySearch = this.searchEntry.clutter_text;
         entrySearch.set_max_length(MAX_LENGTH);
-        entrySearch.connect('key-press-event', Lang.bind(this, function(o, e) {
-            let symbol = e.get_key_symbol();
-            if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
-                this._clearSearchResults();
-            
-                //this.menu.close();
-                let searchStrs = o.get_text().trim().split(/\s+/);
-                searchStrs = searchStrs.filter(s => s != "");
-                
-                if (searchStrs.length > 0) {
-                    let items = this.keyring.getItems(searchStrs);
-                    
-                    if (items.length > 0) {
-                        for (let i in items) {
-                            let item = items[i];
-                            let mi = this._createSecretMenuItem(item);
-                            this.searchResultsSection.addMenuItem(mi);
-                        }
-                    } else {
-                        let it = new PopupMenu.PopupMenuItem(_("Nothing found."));
-                        this.searchResultsSection.addMenuItem(it);
+        entrySearch.connect("text-changed", (obj, event) => {
+            const text1 = obj.get_text();
+
+            if (text1.trim().length === 0) {
+                // do nothing
+            } else if (text1.trim().length < 3) {
+                // here we want to wait a while because there
+                // are more chars comming for sure.
+                // However, if there not more input comming we
+                // still activate the search in order to not
+                // confuse the user!
+
+                Mainloop.timeout_add_seconds(1, () => {
+                    const text2 = obj.get_text();
+
+                    // if the text already changed again we
+                    // don't need to search
+                    if (text1 === text2) {
+                        this._updateSearchResults(text1);
                     }
-                }
+                })
+            } else {
+                this._updateSearchResults(text1);
             }
-            
-        }));
+        });
         
         bottomSection.actor.add_actor(this.searchEntry);
         bottomSection.addMenuItem(this.searchResultsSection);
         bottomSection.actor.add_style_class_name("searchSection");
         this.menu.addMenuItem(bottomSection);
+    },
+
+    _updateSearchResults: function(text) {
+        this._clearSearchResults();
+
+        //this.menu.close();
+        let searchStrs = text.trim().split(/\s+/);
+        searchStrs = searchStrs.filter(s => s != "");
+
+        if (searchStrs.length > 0) {
+            let items = this.keyring.getItems(searchStrs);
+
+            if (items.length > 0) {
+                for (let i in items) {
+                    let item = items[i];
+                    let mi = this._createSecretMenuItem(item);
+                    this.searchResultsSection.addMenuItem(mi);
+                }
+            } else {
+                let it = new PopupMenu.PopupMenuItem(_("Nothing found."));
+                this.searchResultsSection.addMenuItem(it);
+            }
+        }
     },
     
     _enable: function() {

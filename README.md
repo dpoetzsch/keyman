@@ -15,7 +15,7 @@ However, keep in mind [the boy scout rule](http://programmer.97things.oreilly.co
 ## Useful links
 
 * A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403]()
-* St library reference: [https://developer.gnome.org/st/]()
+* St library reference: [https://developer.gnome.org/st/stable/]()
 
 # License
 

@@ -34,6 +34,13 @@ const KeyringConnection = new Lang.Class({
         this.session = result[1];
         
         this.signalConnections = []; // array of tuples [signalProvider, signalID]
+
+        // maps item paths to item labels because fetching the label
+        // for a path is slow (around 5ms on my machine). We have to do
+        // this for *all* items, so searching can easily take a second or
+        // so. Using the cache we have a major performance gain that even
+        // allows searching as you type
+        this.labelCache = {}
     },
     
     close: function() {
@@ -111,8 +118,13 @@ const KeyringConnection = new Lang.Class({
      * Fetch the label of an item with the specified path.
      */
     _getItemLabelFromPath: function(path) {
-        let item = new Interfaces.SecretItemProxy(bus, secretBus, path);
-        return item.Label;
+        if (this.labelCache[path]) {
+            return this.labelCache[path];
+        } else {
+            const item = new Interfaces.SecretItemProxy(bus, secretBus, path);
+            this.labelCache[path] = item.Label;
+            return item.Label;
+        }
     },
     
     /**
