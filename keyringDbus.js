@@ -122,7 +122,7 @@ const KeyringConnection = new Lang.Class({
      * @return An array of matching secret items (see makeItem for details)
      */
     getItems: function(searchStrs) {
-        searchStrs.map(function(s) s.toLowerCase());
+        searchStrs.map(s => s.toLowerCase());
     
         let searchResult = this.service.SearchItemsSync([]);
         let allItems = searchResult[0].concat(searchResult[1]);
