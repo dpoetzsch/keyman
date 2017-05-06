@@ -113,7 +113,10 @@ const KeyMan = new Lang.Class({
             Lang.bind(this, function(menu, open) {
                 // this is triggered when the keymanager menu is opened
                 if (open) {
-                    this.searchEntry.grab_key_focus();
+                    // if we do it immediately the focus gets lost again
+                    Mainloop.timeout_add_seconds(0, () => {
+                        this.searchEntry.grab_key_focus();
+                    });
                 } else {
                     this.searchEntry.get_stage().set_key_focus(null);
                 }
@@ -141,13 +144,13 @@ const KeyMan = new Lang.Class({
     
     _createSecretMenuItem: function(item) {
         let pmi = new PopupMenu.PopupMenuItem(item.label);
-        pmi.connect('activate', Lang.bind(this, function() {
+        pmi.connect('activate', () => {
             this._copySecret(item.path);
             this._clearSearchResults();
             this.history.add(item);
             this._populateHistoryMenu();
             this.menu.close();
-        }));
+        });
         return pmi;
     },
     
@@ -205,48 +208,72 @@ const KeyMan = new Lang.Class({
         let bottomSection = new PopupMenu.PopupMenuSection();
         
         this.searchResultsSection = new PopupMenu.PopupMenuSection();
+
+        const searchHint = _("Search...")
         
         this.searchEntry = new St.Entry(
         {
             name: "searchEntry",
-            hint_text: _("Search..."),
+            hint_text: searchHint,
             track_hover: true,
             can_focus: true
         });
         
         let entrySearch = this.searchEntry.clutter_text;
         entrySearch.set_max_length(MAX_LENGTH);
-        entrySearch.connect('key-press-event', Lang.bind(this, function(o, e) {
-            let symbol = e.get_key_symbol();
-            if (symbol == KEY_RETURN || symbol == KEY_ENTER) {
-                this._clearSearchResults();
-            
-                //this.menu.close();
-                let searchStrs = o.get_text().trim().split(/\s+/);
-                searchStrs = searchStrs.filter(function(s) s != "");
-                
-                if (searchStrs.length > 0) {
-                    let items = this.keyring.getItems(searchStrs);
-                    
-                    if (items.length > 0) {
-                        for (let i in items) {
-                            let item = items[i];
-                            let mi = this._createSecretMenuItem(item);
-                            this.searchResultsSection.addMenuItem(mi);
-                        }
-                    } else {
-                        let it = new PopupMenu.PopupMenuItem(_("Nothing found."));
-                        this.searchResultsSection.addMenuItem(it);
+        entrySearch.connect("text-changed", (obj, event) => {
+            const text1 = obj.get_text();
+
+            if (text1.trim().length === 0) {
+                // do nothing
+            } else if (text1.trim().length < 3) {
+                // here we want to wait a while because there
+                // are more chars comming for sure.
+                // However, if there not more input comming we
+                // still activate the search in order to not
+                // confuse the user!
+
+                Mainloop.timeout_add_seconds(1, () => {
+                    const text2 = obj.get_text();
+
+                    // if the text already changed again we
+                    // don't need to search
+                    if (text1 === text2) {
+                        this._updateSearchResults(text1);
                     }
-                }
+                })
+            } else if (text1 !== searchHint) {
+                this._updateSearchResults(text1);
             }
-            
-        }));
+        });
         
         bottomSection.actor.add_actor(this.searchEntry);
         bottomSection.addMenuItem(this.searchResultsSection);
         bottomSection.actor.add_style_class_name("searchSection");
         this.menu.addMenuItem(bottomSection);
+    },
+
+    _updateSearchResults: function(text) {
+        this._clearSearchResults();
+
+        //this.menu.close();
+        let searchStrs = text.trim().split(/\s+/);
+        searchStrs = searchStrs.filter(s => s != "");
+
+        if (searchStrs.length > 0) {
+            let items = this.keyring.getItems(searchStrs);
+
+            if (items.length > 0) {
+                for (let i in items) {
+                    let item = items[i];
+                    let mi = this._createSecretMenuItem(item);
+                    this.searchResultsSection.addMenuItem(mi);
+                }
+            } else {
+                let it = new PopupMenu.PopupMenuItem(_("Nothing found."));
+                this.searchResultsSection.addMenuItem(it);
+            }
+        }
     },
     
     _enable: function() {
