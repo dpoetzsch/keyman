@@ -113,7 +113,10 @@ const KeyMan = new Lang.Class({
             Lang.bind(this, function(menu, open) {
                 // this is triggered when the keymanager menu is opened
                 if (open) {
-                    this.searchEntry.grab_key_focus();
+                    // if we do it immediately the focus gets lost again
+                    Mainloop.timeout_add_seconds(0, () => {
+                        this.searchEntry.grab_key_focus();
+                    });
                 } else {
                     this.searchEntry.get_stage().set_key_focus(null);
                 }
@@ -223,7 +226,7 @@ const KeyMan = new Lang.Class({
             
                 //this.menu.close();
                 let searchStrs = o.get_text().trim().split(/\s+/);
-                searchStrs = searchStrs.filter(function(s) s != "");
+                searchStrs = searchStrs.filter(s => s != "");
                 
                 if (searchStrs.length > 0) {
                     let items = this.keyring.getItems(searchStrs);
