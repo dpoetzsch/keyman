@@ -260,6 +260,17 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
             callback(String(label), String(secret));
         };
         /**
+         * Invalidates all entries in the label cache for the specified collection.
+         */
+        KeyringConnection.prototype.invalidateLabelCache = function (forCollectionPath) {
+            for (var _i = 0, _a = Object.keys(this.labelCache); _i < _a.length; _i++) {
+                var k = _a[_i];
+                if (k.startsWith(forCollectionPath)) {
+                    delete this.labelCache[k];
+                }
+            }
+        };
+        /**
          * Fetch the label and secret of an item with the specified path.
          * callback is a function(label, secret) that gets called when the
          * information is fetched.
@@ -278,6 +289,7 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
          * value that indicates wether the object was locked before.
          */
         KeyringConnection.prototype.unlockObject = function (path, callback) {
+            var _this = this;
             var result = this.service.UnlockSync([path]);
             var ul_prompt_path = result[1];
             if (ul_prompt_path != "/") {
@@ -285,6 +297,9 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
                 var prompt_1 = new Interfaces.SecretPromptProxy(bus, secretBus, ul_prompt_path);
                 this.signalConnections.push([prompt_1,
                     prompt_1.connectSignal("Completed", function () {
+                        // invalidate label cache for this collection
+                        // (there might be paths with null values in it)
+                        _this.invalidateLabelCache(path);
                         callback(true);
                     })]);
                 prompt_1.PromptSync("");
@@ -300,8 +315,8 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
         /**
          * Fetch the label of an item with the specified path.
          */
-        KeyringConnection.prototype._getItemLabelFromPath = function (path) {
-            if (this.labelCache[path]) {
+        KeyringConnection.prototype.getItemLabelFromPath = function (path) {
+            if (this.labelCache.hasOwnProperty(path)) {
                 return this.labelCache[path];
             }
             else {
@@ -310,6 +325,10 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
                 return item.Label;
             }
         };
+        KeyringConnection.prototype.getAllItemPaths = function () {
+            var searchResult = this.service.SearchItemsSync([]);
+            return searchResult[0].concat(searchResult[1]);
+        };
         /**
          * Return all secret items that match a number of search strings.
          * @arg searchStrs An array of strings that must be contained in the
@@ -317,17 +336,19 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
          * @return An array of matching secret items (see makeItem for details)
          */
         KeyringConnection.prototype.getItems = function (searchStrs) {
-            searchStrs.map(function (s) { return s.toLowerCase(); });
-            var searchResult = this.service.SearchItemsSync([]);
-            var allItems = searchResult[0].concat(searchResult[1]);
+            searchStrs = searchStrs.map(function (s) { return s.toLowerCase(); });
+            var allItems = this.getAllItemPaths();
             var matchingItems = [];
-            for (var i in allItems) {
-                var path = allItems[i];
-                var label = this._getItemLabelFromPath(path);
+            for (var _i = 0, allItems_1 = allItems; _i < allItems_1.length; _i++) {
+                var path = allItems_1[_i];
+                var label = this.getItemLabelFromPath(path);
+                if (!label) {
+                    continue;
+                }
                 var labelLow = label.toLowerCase();
                 var isMatch = true;
-                for (var j in searchStrs) {
-                    if (labelLow.indexOf(searchStrs[j]) == -1) {
+                for (var s in searchStrs) {
+                    if (labelLow.indexOf(s) === -1) {
                         isMatch = false;
                         break;
                     }
@@ -337,6 +358,9 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
                 }
             }
             return matchingItems;
+        };
+        KeyringConnection.prototype.getAllItems = function () {
+            return this.getItems([]);
         };
         /**
          * Return all collections as items (see makeItem for details).
