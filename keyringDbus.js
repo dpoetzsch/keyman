@@ -347,7 +347,8 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
                 }
                 var labelLow = label.toLowerCase();
                 var isMatch = true;
-                for (var s in searchStrs) {
+                for (var _a = 0, searchStrs_1 = searchStrs; _a < searchStrs_1.length; _a++) {
+                    var s = searchStrs_1[_a];
                     if (labelLow.indexOf(s) === -1) {
                         isMatch = false;
                         break;
