@@ -12,6 +12,23 @@ Finally, this extension provides a history of the last copied passwords.
 Contributions are always welcome.
 However, keep in mind [the boy scout rule](http://programmer.97things.oreilly.com/wiki/index.php/The_Boy_Scout_Rule).
 
+Note that `keyringDbus.js` is auto-generated and copied from [gnome-keyring-js](https://github.com/dpoetzsch/gnome-keyring-js).
+Any changes to this file should occur in this repository.
+
+## Deploying
+
+Locally, for testing:
+
+```bash
+./deploy.sh
+```
+
+Build a package for extension.gnome.org:
+
+```bash
+./deploy.sh zip
+```
+
 ## Useful links
 
 * A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403]()

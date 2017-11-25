@@ -5,7 +5,7 @@ if [ "$1" = "zip" ]; then
     MODE="zip"
 fi
 
-FILES="extension.js keyman.js clipboard.js keyringDbus.js keyringInterfaces.js"
+FILES="extension.js keyman.js clipboard.js keyringDbus.js"
 FILES="$FILES utils.js data.js settings.js prefs.js metadata.json"
 FILES="$FILES LICENSE README.md schemas/ locale/ keyman.pot stylesheet.css"
 
