@@ -34,11 +34,12 @@ const CollectionItem = new Lang.Class({
     Name: "CollectionItem",
     Extends: PopupMenu.PopupMenuItem,
     
-    _init: function(keyring, collection) {
+    _init: function(keyring, collection, changeCallback = null) {
         this.parent(collection.label);
         
         this.keyring = keyring;
         this.collection = collection;
+        this.changeCallback = changeCallback;
         
         this._lockedIcon = new St.Icon({
             icon_name: "changes-prevent-symbolic",
@@ -67,13 +68,20 @@ const CollectionItem = new Lang.Class({
     
     _toggle: function() {
         if (this.collection.locked) {
-            this.keyring.unlockObject(this.collection.path,
-                Lang.bind(this, function(wasLockedBefore) {
-                    this.collection.locked = false;
-                }));
+            this.keyring.unlockObject(this.collection.path, (wasLockedBefore) => {
+                this.collection.locked = false;
+                this._callChangeCallback();
+            });
         } else {
             this.keyring.lockObject(this.collection.path);
             this.collection.locked = true;
+            this._callChangeCallback();
+        }
+    },
+
+    _callChangeCallback: function() {
+        if (this.changeCallback) {
+            this.changeCallback();
         }
     }
 })
@@ -138,8 +146,7 @@ const KeyMan = new Lang.Class({
     },
     
     _copySecret: function(path) {
-        this.keyring.getSecretFromPath(path,
-                Lang.bind(this, this._getSecretCallback));
+        this.keyring.getSecretFromPath(path, () => this._getSecretCallback);
     },
     
     _createSecretMenuItem: function(item) {
@@ -176,7 +183,7 @@ const KeyMan = new Lang.Class({
                 // we don't add the item via addMenuItem because we do not
                 // want the menu to close if the item is clicked
                 this.collectionsMenu.menu.box.add(
-                    new CollectionItem(this.keyring, col).actor);
+                    new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).actor);
             }
         }
     },
@@ -189,8 +196,9 @@ const KeyMan = new Lang.Class({
         this.menu.addMenuItem(this.collectionsMenu);
         
         // when collections change refill collections menu
-        this.keyring.connectCollectionChangedSignal(
-            Lang.bind(this, this._populateCollectionsMenu));
+        this.keyring.connectCollectionChangedSignal(() => {
+            this._populateCollectionsMenu();
+        });
         
         let separator1 = new PopupMenu.PopupSeparatorMenuItem();
         this.menu.addMenuItem(separator1);
@@ -209,27 +217,28 @@ const KeyMan = new Lang.Class({
         
         this.searchResultsSection = new PopupMenu.PopupMenuSection();
 
-        const searchHint = _("Search...")
+        this.searchHint = _("Search...")
         
         this.searchEntry = new St.Entry(
         {
             name: "searchEntry",
-            hint_text: searchHint,
+            hint_text: this.searchHint,
             track_hover: true,
             can_focus: true
         });
         
-        let entrySearch = this.searchEntry.clutter_text;
-        entrySearch.set_max_length(MAX_LENGTH);
-        entrySearch.connect("text-changed", (obj, event) => {
+        this.entrySearch = this.searchEntry.clutter_text;
+        this.entrySearch.set_max_length(MAX_LENGTH);
+        this.entrySearch.connect("text-changed", (obj, event) => {
             const text1 = obj.get_text();
+            const text1Len = text1.trim().length;
 
-            if (text1.trim().length === 0) {
-                // do nothing
-            } else if (text1.trim().length < 3) {
+            if (text1Len == 0 || text1Len >= 3) {
+                this._repopulateSearchResults();
+            } else {
                 // here we want to wait a while because there
                 // are more chars comming for sure.
-                // However, if there not more input comming we
+                // However, if there is not more input comming we
                 // still activate the search in order to not
                 // confuse the user!
 
@@ -239,11 +248,9 @@ const KeyMan = new Lang.Class({
                     // if the text already changed again we
                     // don't need to search
                     if (text1 === text2) {
-                        this._updateSearchResults(text1);
+                        this._repopulateSearchResults();
                     }
-                })
-            } else if (text1 !== searchHint) {
-                this._updateSearchResults(text1);
+                });
             }
         });
         
@@ -253,8 +260,20 @@ const KeyMan = new Lang.Class({
         this.menu.addMenuItem(bottomSection);
     },
 
+    _repopulateSearchResults: function() {
+        const text = this.entrySearch.get_text();
+
+        if (text !== this.searchHint) {
+            this._updateSearchResults(text);
+        }
+    },
+
     _updateSearchResults: function(text) {
         this._clearSearchResults();
+
+        if (text.trim().length === 0) {
+            return;
+        }
 
         //this.menu.close();
         let searchStrs = text.trim().split(/\s+/);
