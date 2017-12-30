@@ -34,11 +34,12 @@ const CollectionItem = new Lang.Class({
     Name: "CollectionItem",
     Extends: PopupMenu.PopupMenuItem,
     
-    _init: function(keyring, collection) {
+    _init: function(keyring, collection, changeCallback = null) {
         this.parent(collection.label);
         
         this.keyring = keyring;
         this.collection = collection;
+        this.changeCallback = changeCallback;
         
         this._lockedIcon = new St.Icon({
             icon_name: "changes-prevent-symbolic",
@@ -69,10 +70,18 @@ const CollectionItem = new Lang.Class({
         if (this.collection.locked) {
             this.keyring.unlockObject(this.collection.path, (wasLockedBefore) => {
                 this.collection.locked = false;
+                this._callChangeCallback();
             });
         } else {
             this.keyring.lockObject(this.collection.path);
             this.collection.locked = true;
+            this._callChangeCallback();
+        }
+    },
+
+    _callChangeCallback: function() {
+        if (this.changeCallback) {
+            this.changeCallback();
         }
     }
 })
@@ -137,8 +146,7 @@ const KeyMan = new Lang.Class({
     },
     
     _copySecret: function(path) {
-        this.keyring.getSecretFromPath(path,
-                Lang.bind(this, this._getSecretCallback));
+        this.keyring.getSecretFromPath(path, () => this._getSecretCallback);
     },
     
     _createSecretMenuItem: function(item) {
@@ -175,7 +183,7 @@ const KeyMan = new Lang.Class({
                 // we don't add the item via addMenuItem because we do not
                 // want the menu to close if the item is clicked
                 this.collectionsMenu.menu.box.add(
-                    new CollectionItem(this.keyring, col).actor);
+                    new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).actor);
             }
         }
     },
@@ -188,8 +196,9 @@ const KeyMan = new Lang.Class({
         this.menu.addMenuItem(this.collectionsMenu);
         
         // when collections change refill collections menu
-        this.keyring.connectCollectionChangedSignal(
-            Lang.bind(this, this._populateCollectionsMenu));
+        this.keyring.connectCollectionChangedSignal(() => {
+            this._populateCollectionsMenu();
+        });
         
         let separator1 = new PopupMenu.PopupSeparatorMenuItem();
         this.menu.addMenuItem(separator1);
