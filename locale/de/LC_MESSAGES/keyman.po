@@ -36,3 +36,6 @@ msgstr "Zeit, die Passwörter in der Zwischenablage liegen (Milisekunden):"
 
 msgid "Number of entries in history:"
 msgstr "Anzahl Einträge in der Historie:"
+
+msgid "Open KeyMan menu"
+msgstr "KeyMan-Menü öffnen"
