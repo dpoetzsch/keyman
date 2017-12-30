@@ -209,27 +209,27 @@ const KeyMan = new Lang.Class({
         
         this.searchResultsSection = new PopupMenu.PopupMenuSection();
 
-        const searchHint = _("Search...")
+        this.searchHint = _("Search...")
         
         this.searchEntry = new St.Entry(
         {
             name: "searchEntry",
-            hint_text: searchHint,
+            hint_text: this.searchHint,
             track_hover: true,
             can_focus: true
         });
         
-        let entrySearch = this.searchEntry.clutter_text;
-        entrySearch.set_max_length(MAX_LENGTH);
-        entrySearch.connect("text-changed", (obj, event) => {
+        this.entrySearch = this.searchEntry.clutter_text;
+        this.entrySearch.set_max_length(MAX_LENGTH);
+        this.entrySearch.connect("text-changed", (obj, event) => {
             const text1 = obj.get_text();
 
-            if (text1.trim().length === 0) {
-                // do nothing
-            } else if (text1.trim().length < 3) {
+            if (text1.trim().length >= 3) {
+                this._repopulateSearchResults();
+            } else {
                 // here we want to wait a while because there
                 // are more chars comming for sure.
-                // However, if there not more input comming we
+                // However, if there is not more input comming we
                 // still activate the search in order to not
                 // confuse the user!
 
@@ -239,11 +239,9 @@ const KeyMan = new Lang.Class({
                     // if the text already changed again we
                     // don't need to search
                     if (text1 === text2) {
-                        this._updateSearchResults(text1);
+                        this._repopulateSearchResults();
                     }
-                })
-            } else if (text1 !== searchHint) {
-                this._updateSearchResults(text1);
+                });
             }
         });
         
@@ -253,8 +251,20 @@ const KeyMan = new Lang.Class({
         this.menu.addMenuItem(bottomSection);
     },
 
+    _repopulateSearchResults: function() {
+        const text = this.entrySearch.get_text();
+
+        if (text !== this.searchHint) {
+            this._updateSearchResults(text);
+        }
+    },
+
     _updateSearchResults: function(text) {
         this._clearSearchResults();
+
+        if (text.trim().length === 0) {
+            return;
+        }
 
         //this.menu.close();
         let searchStrs = text.trim().split(/\s+/);
