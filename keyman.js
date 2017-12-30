@@ -223,8 +223,9 @@ const KeyMan = new Lang.Class({
         this.entrySearch.set_max_length(MAX_LENGTH);
         this.entrySearch.connect("text-changed", (obj, event) => {
             const text1 = obj.get_text();
+            const text1Len = text1.trim().length;
 
-            if (text1.trim().length >= 3) {
+            if (text1Len == 0 || text1Len >= 3) {
                 this._repopulateSearchResults();
             } else {
                 // here we want to wait a while because there
