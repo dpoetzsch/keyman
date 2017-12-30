@@ -17,6 +17,8 @@ const KEY_PRIMARY_CLIPBOARD = "primary-clipboard"
 const KEY_CLIPBOARD_DURATION = "clipboard-duration";
 const KEY_HISTORY_SIZE = "history-size";
 
+const KEY_OPEN_KEYMAN_MENU_KEYBINDING = 'open-keyman-menu-keybinding';
+
 /**
  * getSettings:
  * @schema: (optional): the GSettings schema id

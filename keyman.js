@@ -11,6 +11,8 @@ const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
 const Lang = imports.lang;
+const Shell = imports.gi.Shell;
+const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
 const GLib = imports.gi.GLib;
 
@@ -111,10 +113,15 @@ const KeyMan = new Lang.Class({
         this.actor.add_actor(icon);
         
         // Add keybinding
-        /*global.display.add_keybinding(keyOpen, mySettings,
+        Main.wm.addKeybinding(
+            Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING,
+            Settings.SETTINGS,
             Meta.KeyBindingFlags.NONE,
-            Lang.bind(this, function() { this.menu.open(); })
-        );*/
+            Shell.ActionMode.NORMAL |
+            Shell.ActionMode.MESSAGE_TRAY |
+            Shell.ActionMode.OVERVIEW,
+            () => this.menu.open(),
+        );
         
         // Auto focus
         this.menu.connect('open-state-changed',

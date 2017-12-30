@@ -3,6 +3,11 @@
 
   <schema path="/org/gnome/shell/extensions/keyman/" id="org.gnome.shell.extensions.keyman">
 
+    <key type="as" name="open-keyman-menu-keybinding">
+        <default><![CDATA[['<Super>K']]]></default>
+        <summary>The key to open the keyman shell menu</summary>
+    </key>
+
     <key type="b" name="primary-clipboard">
         <default>false</default>
         <summary>If true, the primary clipboard (mousekey 3) is used instead of the default clipboard (Strg+V)</summary>
