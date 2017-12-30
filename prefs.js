@@ -86,7 +86,7 @@ const KeyManSettingsWidget = new GObject.Class({
         this.add(historySizeSpinButton);
 
         const keybindings = {};
-        keybindings[Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING] = _('Open keyman menu');
+        keybindings[Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING] = _('Open KeyMan menu');
         this.add(new TranslatorKeybindingsWidget(keybindings));
     },
 });
