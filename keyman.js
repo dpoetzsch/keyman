@@ -67,10 +67,9 @@ const CollectionItem = new Lang.Class({
     
     _toggle: function() {
         if (this.collection.locked) {
-            this.keyring.unlockObject(this.collection.path,
-                Lang.bind(this, function(wasLockedBefore) {
-                    this.collection.locked = false;
-                }));
+            this.keyring.unlockObject(this.collection.path, (wasLockedBefore) => {
+                this.collection.locked = false;
+            });
         } else {
             this.keyring.lockObject(this.collection.path);
             this.collection.locked = true;
