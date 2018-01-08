@@ -153,7 +153,7 @@ const KeyMan = new Lang.Class({
     },
     
     _copySecret: function(path) {
-        this.keyring.getSecretFromPath(path, () => this._getSecretCallback);
+        this.keyring.getSecretFromPath(path, (label, secret) => this._getSecretCallback(label, secret));
     },
     
     _createSecretMenuItem: function(item) {
