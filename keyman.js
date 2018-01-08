@@ -142,6 +142,14 @@ const KeyMan = new Lang.Class({
     },
     
     _getSecretCallback: function(label, secret) {
+        // there is a weird bug that sometimes we don't get the secret;
+        // thus, we add some debug output in this case
+        if (!secret || secret === '') {
+            print('KEYMAN: fetched secret but it was: "' + secret + '"');
+        } else {
+            print('KEYMAN: fetched secret and it was neither empty nor undefined');
+        }
+
         this._removeTimeouts();
         Clipboard.set(secret);
         
