@@ -11,13 +11,13 @@ const Gio = imports.gi.Gio;
 const GLib = imports.gi.GLib;
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 
-const SETTINGS = getSettings();
+var SETTINGS = getSettings();
 
-const KEY_PRIMARY_CLIPBOARD = "primary-clipboard"
-const KEY_CLIPBOARD_DURATION = "clipboard-duration";
-const KEY_HISTORY_SIZE = "history-size";
+var KEY_PRIMARY_CLIPBOARD = "primary-clipboard"
+var KEY_CLIPBOARD_DURATION = "clipboard-duration";
+var KEY_HISTORY_SIZE = "history-size";
 
-const KEY_OPEN_KEYMAN_MENU_KEYBINDING = 'open-keyman-menu-keybinding';
+var KEY_OPEN_KEYMAN_MENU_KEYBINDING = 'open-keyman-menu-keybinding';
 
 /**
  * getSettings:
