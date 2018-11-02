@@ -29,6 +29,12 @@ Build a package for extension.gnome.org:
 ./deploy.sh zip
 ```
 
+## Releasing
+
+1. Update the version number in `metadata.json`
+2. Create a bundle: `./deploy.sh zip`
+3. Upload to `extensions.gnome.org`
+
 ## Useful links
 
 * A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403]()
