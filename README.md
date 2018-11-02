@@ -32,8 +32,9 @@ Build a package for extension.gnome.org:
 ## Releasing
 
 1. Update the version number in `metadata.json`
-2. Create a bundle: `./deploy.sh zip`
-3. Upload to `extensions.gnome.org`
+2. Tag the version in the repository: `git tag -a vXX`
+3. Create a bundle: `./deploy.sh zip`
+4. Upload to `extensions.gnome.org`
 
 ## Useful links
 
