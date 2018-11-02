@@ -179,7 +179,7 @@ const KeyMan = new Lang.Class({
     _populateHistoryMenu: function() {
         this.historySection.removeAll();
         
-        for (let elem in this.history.iterator()) {
+        for (const elem of this.history.iterator()) {
             this.historySection.addMenuItem(this._createSecretMenuItem(elem));
         }
     },

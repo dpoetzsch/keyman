@@ -59,7 +59,7 @@ const History = new Lang.Class({
         }
     },
     
-    iterator: function() {
+    iterator: function*() {
         for (let i in this.history) {
             yield this.history[i];
         }
@@ -117,7 +117,7 @@ const Bookmarks = new Lang.Class({
         }
     },
     
-    iterator: function() {
+    iterator: function*() {
         for (let bm in this.bookmarks) {
             yield this.bookmarks[bm];
         }
