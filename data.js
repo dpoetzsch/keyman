@@ -113,7 +113,7 @@ const Bookmarks = new Lang.Class({
     close: function() {
         // write to file
         if (this.bookmarks.length > 0) {
-            _write(this.bookmarks);
+            this._write(this.bookmarks);
         }
     },
     
