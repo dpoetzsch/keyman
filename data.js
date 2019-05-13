@@ -13,67 +13,62 @@ const Utils = Me.imports.utils;
 const Settings = Me.imports.settings;
 const assert = Utils.assert;
 
-const DataManager = new Lang.Class({
-    Name: "DataManager",
-    
-    _init: function(dataDir, filename) {
+class DataManager {
+    constructor(dataDir, filename) {
         this.dataDir = dataDir;
         this.filePath = Utils.joinPaths([dataDir, filename]);
-    },
+    }
     
-    _load: function(defaultValue) {
+    _load(defaultValue) {
         if (Utils.fileExists(this.filePath)) {
             // load contents from file
             let content = Utils.readFromFile(this.filePath);
             return JSON.parse(content);
         }
         return defaultValue;
-    },
+    }
     
-    _write: function(data) {
+    _write(data) {
         Utils.mkdirP(this.dataDir);
         Utils.writeToFile(this.filePath, JSON.stringify(data));
     }
-})
+}
 
-const History = new Lang.Class({
-    Name: "History",
-    Extends: DataManager,
-
-    _init: function(dataDir) {
-        this.parent(dataDir, "history.json");
+class History extends DataManager {
+    constructor(dataDir) {
+        super(dataDir, "history.json");
         
         // an array with entries like
         // {path: "/org/freedesktop/secrets/...", label: "TestItem"}
         this.history = this._load([]);
-    },
+    }
     
-    getMaxSize: function() {
+    getMaxSize() {
         return Settings.SETTINGS.get_int(Settings.KEY_HISTORY_SIZE);
-    },
+    }
     
-    close: function() {
+    close() {
         // write to file
         if (this.history.length > 0) {
             this._write(this.history);
         }
-    },
+    }
     
-    iterator: function*() {
+    *[Symbol.iterator]() {
         for (let i in this.history) {
             yield this.history[i];
         }
-    },
+    }
     
-    trimToMaxSize: function() {
+    trimToMaxSize() {
         let maxSize = this.getMaxSize();
         while (this.history.length > maxSize) {
             this.history.pop();
         }
         assert(this.history.length <= maxSize);
-    },
+    }
     
-    add: function(item) {
+    add(item) {
         let idx = 0;
         while ((idx < this.history.length) &&
                 (this.history[idx].path != item.path)) {
@@ -93,41 +88,39 @@ const History = new Lang.Class({
             this.trimToMaxSize();
         }
     }
-})
+}
 
 // This is currently unused because history replaces bookmarks for now.
 // If I somehow figure out how to program drag&drop and context menus for menu
 // items it will be used again.
-const Bookmarks = new Lang.Class({
-    Name: "Bookmarks",
-    Extends: DataManager,
+class Bookmarks extends DataManager {
 
-    _init: function(dataDir) {
-        this.parent(dataDir, "bookmarks.json");
+    constructor(dataDir) {
+        super(dataDir, "bookmarks.json");
         
         // an array with entries like
         // {path: "/org/freedesktop/secrets/...", label: "TestItem"}
         this.bookmarks = this._load([]);
-    },
+    }
     
-    close: function() {
+    close() {
         // write to file
         if (this.bookmarks.length > 0) {
             this._write(this.bookmarks);
         }
-    },
+    }
     
-    iterator: function*() {
+    *[Symbol.iterator]() {
         for (let bm in this.bookmarks) {
             yield this.bookmarks[bm];
         }
-    },
+    }
     
-    add: function(label, path) {
+    add(label, path) {
         this.bookmarks.push(Keyring.makeItem(label, path));
-    },
+    }
     
-    remove: function(path) {
+    remove(path) {
         let idx = 0;
         while ((idx < this.bookmarks.length) &&
                 (this.bookmarks[idx].path != path)) {
@@ -136,4 +129,4 @@ const Bookmarks = new Lang.Class({
         assert(this.bookmarks[idx].path == path);
         this.bookmarks.splice(idx, 1);
     }
-})
+}

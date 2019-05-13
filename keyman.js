@@ -32,12 +32,9 @@ const KEY_ENTER = 65421;
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
-const CollectionItem = new Lang.Class({
-    Name: "CollectionItem",
-    Extends: PopupMenu.PopupMenuItem,
-    
-    _init: function(keyring, collection, changeCallback = null) {
-        this.parent(collection.label);
+class CollectionItem extends PopupMenu.PopupMenuItem {
+    constructor(keyring, collection, changeCallback = null) {
+        super(collection.label);
         
         this.keyring = keyring;
         this.collection = collection;
@@ -58,17 +55,17 @@ const CollectionItem = new Lang.Class({
         
         this._addIcon();
         this.connect('activate', Lang.bind(this, this._toggle));
-    },
+    }
     
-    _addIcon: function() {
+    _addIcon() {
         if (this.collection.locked) {
             this.actor.add_actor(this._lockedIcon);
         } else {
             this.actor.add_actor(this._unlockedIcon);
         }
-    },
+    }
     
-    _toggle: function() {
+    _toggle() {
         if (this.collection.locked) {
             this.keyring.unlockObject(this.collection.path, (wasLockedBefore) => {
                 this.collection.locked = false;
@@ -79,21 +76,18 @@ const CollectionItem = new Lang.Class({
             this.collection.locked = true;
             this._callChangeCallback();
         }
-    },
+    }
 
-    _callChangeCallback: function() {
+    _callChangeCallback() {
         if (this.changeCallback) {
             this.changeCallback();
         }
     }
-})
+}
 
-const KeyMan = new Lang.Class({
-    Name: "KeyMan",
-    Extends: PanelMenu.Button,
-    
-    _init: function() {
-        this.parent(St.Align.START);
+class KeyMan extends PanelMenu.Button {
+    constructor() {
+        super(St.Align.START);
 
         // connect to keyring
         this.keyring = new KeyringConnection();
@@ -139,9 +133,9 @@ const KeyMan = new Lang.Class({
         );
         
         this._createLayout();
-    },
+    }
     
-    _getSecretCallback: function(label, secret) {
+    _getSecretCallback(label, secret) {
         // there is a weird bug that sometimes we don't get the secret;
         // thus, we add some debug output in this case
         if (!secret || secret === '') {
@@ -158,13 +152,13 @@ const KeyMan = new Lang.Class({
         this.timeouts.push(Mainloop.timeout_add(duration, function() {
             Clipboard.empty();
         }));
-    },
+    }
     
-    _copySecret: function(path) {
+    _copySecret(path) {
         this.keyring.getSecretFromPath(path, (label, secret) => this._getSecretCallback(label, secret));
-    },
+    }
     
-    _createSecretMenuItem: function(item) {
+    _createSecretMenuItem(item) {
         let pmi = new PopupMenu.PopupMenuItem(item.label);
         pmi.connect('activate', () => {
             this._copySecret(item.path);
@@ -174,21 +168,21 @@ const KeyMan = new Lang.Class({
             this.menu.close();
         });
         return pmi;
-    },
+    }
     
-    _populateHistoryMenu: function() {
+    _populateHistoryMenu() {
         this.historySection.removeAll();
         
-        for (const elem of this.history.iterator()) {
+        for (const elem of this.history) {
             this.historySection.addMenuItem(this._createSecretMenuItem(elem));
         }
-    },
+    }
     
-    _clearSearchResults: function() {
+    _clearSearchResults() {
         this.searchResultsSection.removeAll();
-    },
+    }
     
-    _populateCollectionsMenu: function() {
+    _populateCollectionsMenu() {
         this.collectionsMenu.menu.removeAll();
         
         let collections = this.keyring.getCollections();
@@ -201,9 +195,9 @@ const KeyMan = new Lang.Class({
                     new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).actor);
             }
         }
-    },
+    }
     
-    _createLayout: function() {
+    _createLayout() {
         // Create unlock menu
         this.collectionsMenu = new PopupMenu.PopupSubMenuMenuItem(
             _("Keyrings"), true);
@@ -273,17 +267,17 @@ const KeyMan = new Lang.Class({
         bottomSection.addMenuItem(this.searchResultsSection);
         bottomSection.actor.add_style_class_name("searchSection");
         this.menu.addMenuItem(bottomSection);
-    },
+    }
 
-    _repopulateSearchResults: function() {
+    _repopulateSearchResults() {
         const text = this.entrySearch.get_text();
 
         if (text !== this.searchHint) {
             this._updateSearchResults(text);
         }
-    },
+    }
 
-    _updateSearchResults: function(text) {
+    _updateSearchResults(text) {
         this._clearSearchResults();
 
         if (text.trim().length === 0) {
@@ -308,20 +302,20 @@ const KeyMan = new Lang.Class({
                 this.searchResultsSection.addMenuItem(it);
             }
         }
-    },
+    }
     
-    _enable: function() {
-    },
+    _enable() {
+    }
 
-    _removeTimeouts: function() {
+    _removeTimeouts() {
         while (this.timeouts.length > 0) {
             Mainloop.source_remove(this.timeouts.pop());
         }
-    },
+    }
 
-    _disable: function() {
+    _disable() {
         this.keyring.close();
         this._removeTimeouts();
         this.history.close();
     }
-})
+}
