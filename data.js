@@ -5,8 +5,6 @@
  * See file LICENSE for details.
  */
 
-const Lang = imports.lang;
-
 const Me = imports.misc.extensionUtils.getCurrentExtension();
 const Keyring = Me.imports.keyringDbus;
 const Utils = Me.imports.utils;

@@ -8,7 +8,6 @@
 const Gio = imports.gi.Gio;
 const Gtk = imports.gi.Gtk;
 const GObject = imports.gi.GObject;
-const Lang = imports.lang;
 
 const Gettext = imports.gettext.domain('keyman');
 const _ = Gettext.gettext;
@@ -144,26 +143,24 @@ const TranslatorKeybindingsWidget = new GObject.Class({
             'editable': true,
             'accel-mode': Gtk.CellRendererAccelMode.GTK
         });
-        keybinding_renderer.connect('accel-edited',
-            Lang.bind(this, function(renderer, iter, key, mods) {
-                let value = Gtk.accelerator_name(key, mods);
-                let [success, iterator ] =
-                    this._store.get_iter_from_string(iter);
+        keybinding_renderer.connect('accel-edited', (renderer, iter, key, mods) => {
+            let value = Gtk.accelerator_name(key, mods);
+            let [success, iterator ] =
+                this._store.get_iter_from_string(iter);
 
-                if(!success) {
-                    printerr("Can't change keybinding");
-                }
+            if(!success) {
+                printerr("Can't change keybinding");
+            }
 
-                let name = this._store.get_value(iterator, 0);
+            let name = this._store.get_value(iterator, 0);
 
-                this._store.set(
-                    iterator,
-                    [this._columns.MODS, this._columns.KEY],
-                    [mods, key]
-                );
-                Settings.SETTINGS.set_strv(name, [value]);
-            })
-        );
+            this._store.set(
+                iterator,
+                [this._columns.MODS, this._columns.KEY],
+                [mods, key]
+            );
+            Settings.SETTINGS.set_strv(name, [value]);
+        });
 
         let keybinding_column = new Gtk.TreeViewColumn({
             'title': 'Modify'

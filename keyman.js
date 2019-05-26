@@ -10,7 +10,6 @@ const Gtk = imports.gi.Gtk;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
 const Main = imports.ui.main;
-const Lang = imports.lang;
 const Shell = imports.gi.Shell;
 const Meta = imports.gi.Meta;
 const Mainloop = imports.mainloop;
@@ -54,7 +53,7 @@ class CollectionItem extends PopupMenu.PopupMenuItem {
         });
         
         this._addIcon();
-        this.connect('activate', Lang.bind(this, this._toggle));
+        this.connect('activate', () => this._toggle());
     }
     
     _addIcon() {
@@ -118,19 +117,17 @@ class KeyMan extends PanelMenu.Button {
         );
         
         // Auto focus
-        this.menu.connect('open-state-changed',
-            Lang.bind(this, function(menu, open) {
-                // this is triggered when the keymanager menu is opened
-                if (open) {
-                    // if we do it immediately the focus gets lost again
-                    Mainloop.timeout_add_seconds(0, () => {
-                        this.searchEntry.grab_key_focus();
-                    });
-                } else {
-                    this.searchEntry.get_stage().set_key_focus(null);
-                }
-            })
-        );
+        this.menu.connect('open-state-changed', (menu, open) => {
+            // this is triggered when the keymanager menu is opened
+            if (open) {
+                // if we do it immediately the focus gets lost again
+                Mainloop.timeout_add_seconds(0, () => {
+                    this.searchEntry.grab_key_focus();
+                });
+            } else {
+                this.searchEntry.get_stage().set_key_focus(null);
+            }
+        });
         
         this._createLayout();
     }
