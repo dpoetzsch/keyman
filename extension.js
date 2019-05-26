@@ -27,7 +27,7 @@ function init(metadata) {
 function enable() {
     keyman = new KeyMan();
     keyman._enable();
-    Main.panel.addToStatusArea('keyman', keyman);
+    Main.panel.addToStatusArea('keyman', keyman.theButton);
 }
 
 function disable() {

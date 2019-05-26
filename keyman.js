@@ -84,9 +84,9 @@ class CollectionItem extends PopupMenu.PopupMenuItem {
     }
 }
 
-class KeyMan extends PanelMenu.Button {
+class KeyMan {
     constructor() {
-        super(St.Align.START);
+        this.theButton = new PanelMenu.Button(St.Align.START);
 
         // connect to keyring
         this.keyring = new KeyringConnection();
@@ -97,13 +97,13 @@ class KeyMan extends PanelMenu.Button {
         // remember timeouts
         this.timeouts = []
         
-        let icon = new St.Icon({
+        const icon = new St.Icon({
             icon_name: 'dialog-password',
             style_class: 'system-status-icon',
             reactive: true,
             track_hover: true
         });
-        this.actor.add_actor(icon);
+        this.theButton.actor.add_actor(icon);
         
         // Add keybinding
         Main.wm.addKeybinding(
@@ -112,11 +112,11 @@ class KeyMan extends PanelMenu.Button {
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL |
             Shell.ActionMode.OVERVIEW,
-            () => this.menu.open(),
+            () => this.theButton.menu.open(),
         );
         
         // Auto focus
-        this.menu.connect('open-state-changed', (menu, open) => {
+        this.theButton.menu.connect('open-state-changed', (menu, open) => {
             // this is triggered when the keymanager menu is opened
             if (open) {
                 // if we do it immediately the focus gets lost again
@@ -161,7 +161,7 @@ class KeyMan extends PanelMenu.Button {
             this._clearSearchResults();
             this.history.add(item);
             this._populateHistoryMenu();
-            this.menu.close();
+            this.theButton.menu.close();
         });
         return pmi;
     }
@@ -198,7 +198,7 @@ class KeyMan extends PanelMenu.Button {
         this.collectionsMenu = new PopupMenu.PopupSubMenuMenuItem(
             _("Keyrings"), true);
         this._populateCollectionsMenu();
-        this.menu.addMenuItem(this.collectionsMenu);
+        this.theButton.menu.addMenuItem(this.collectionsMenu);
         
         // when collections change refill collections menu
         this.keyring.connectCollectionChangedSignal(() => {
@@ -206,16 +206,16 @@ class KeyMan extends PanelMenu.Button {
         });
         
         let separator1 = new PopupMenu.PopupSeparatorMenuItem();
-        this.menu.addMenuItem(separator1);
+        this.theButton.menu.addMenuItem(separator1);
 
         // Create history section
         this.historySection = new PopupMenu.PopupMenuSection();
         this._populateHistoryMenu();
-        this.menu.addMenuItem(this.historySection);
+        this.theButton.menu.addMenuItem(this.historySection);
         
         // Separator
         let separator2 = new PopupMenu.PopupSeparatorMenuItem();
-        this.menu.addMenuItem(separator2);
+        this.theButton.menu.addMenuItem(separator2);
         
         // Bottom section: Search
         let bottomSection = new PopupMenu.PopupMenuSection();
@@ -262,7 +262,7 @@ class KeyMan extends PanelMenu.Button {
         bottomSection.actor.add_actor(this.searchEntry);
         bottomSection.addMenuItem(this.searchResultsSection);
         bottomSection.actor.add_style_class_name("searchSection");
-        this.menu.addMenuItem(bottomSection);
+        this.theButton.menu.addMenuItem(bottomSection);
     }
 
     _repopulateSearchResults() {
