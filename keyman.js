@@ -111,7 +111,6 @@ class KeyMan extends PanelMenu.Button {
             Settings.SETTINGS,
             Meta.KeyBindingFlags.NONE,
             Shell.ActionMode.NORMAL |
-            Shell.ActionMode.MESSAGE_TRAY |
             Shell.ActionMode.OVERVIEW,
             () => this.menu.open(),
         );
