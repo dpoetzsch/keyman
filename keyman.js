@@ -314,4 +314,8 @@ class KeyMan {
         this._removeTimeouts();
         this.history.close();
     }
+
+    _reconnect() {
+        this.keyring = new KeyringConnection();
+    }
 }
