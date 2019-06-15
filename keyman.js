@@ -314,4 +314,8 @@ class KeyMan {
         this._removeTimeouts();
         this.history.close();
     }
+
+    destroy() {
+        this.theButton.destroy();
+    }
 }
