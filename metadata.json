@@ -5,6 +5,6 @@
     "name": "KeyMan",
     "description": "Access passwords from the gnome keyring in a convenient way:\nSimply search for your password and copy it to clipboad by clicking it. After a certain amount of time it will be removed automatically (default is 5 seconds). As this only works if the keyrings are unlocked, this extension also provides easy access to lock/unlock keyrings.",
     "url": "https://github.com/dpoetzsch/keyman",
-    "version": 23,
+    "version": 24,
     "settings-schema": "org.gnome.shell.extensions.keyman"
 }
