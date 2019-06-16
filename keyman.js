@@ -317,5 +317,6 @@ class KeyMan {
 
     destroy() {
         this.theButton.destroy();
+        Main.wm.removeKeybinding(Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING);
     }
 }
