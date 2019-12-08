@@ -38,8 +38,8 @@ Build a package for extension.gnome.org:
 
 ## Useful links
 
-* A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403]()
-* St library reference: [https://developer.gnome.org/st/stable/]()
+* A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403](http://stackoverflow.com/a/13315324/3594403)
+* St library reference: [https://developer.gnome.org/st/stable/](https://developer.gnome.org/st/stable/)
 
 # License
 
