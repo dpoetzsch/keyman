@@ -20,7 +20,7 @@ if [ -x "$(command -v gnome-extensions)" ]; then
     --extra-source=utils.js \
     --extra-source=settings.js
 
-  if [ "$MODE" == "zip" ]; then
+  if [ "$MODE" = "zip" ]; then
     echo "Renaming pack to keyman.zip"
     mv keyman@dpoetzsch.github.com.shell-extension.zip keyman.zip
     exit 0
