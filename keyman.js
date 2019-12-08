@@ -188,7 +188,7 @@ class KeyMan {
                 // we don't add the item via addMenuItem because we do not
                 // want the menu to close if the item is clicked
                 this.collectionsMenu.menu.box.add(
-                    new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).actor);
+                    new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).item.actor);
             }
         }
     }
