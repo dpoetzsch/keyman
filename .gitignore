@@ -2,5 +2,5 @@
 *.mo
 extensions
 schemas/gschemas.compiled
-keyman.zip
+/*.zip
 /.vscode

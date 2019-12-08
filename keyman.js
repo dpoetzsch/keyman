@@ -31,14 +31,14 @@ const KEY_ENTER = 65421;
 
 const dataDir = Utils.joinPaths([GLib.get_user_data_dir(), "KeyMan"]);
 
-class CollectionItem extends PopupMenu.PopupMenuItem {
+class CollectionItem {
     constructor(keyring, collection, changeCallback = null) {
-        super(collection.label);
-        
+        this.item = new PopupMenu.PopupMenuItem(collection.label);
+
         this.keyring = keyring;
         this.collection = collection;
         this.changeCallback = changeCallback;
-        
+
         this._lockedIcon = new St.Icon({
             icon_name: "changes-prevent-symbolic",
             style_class: 'system-status-icon',
@@ -53,14 +53,14 @@ class CollectionItem extends PopupMenu.PopupMenuItem {
         });
         
         this._addIcon();
-        this.connect('activate', () => this._toggle());
+        this.item.connect('activate', () => this._toggle());
     }
     
     _addIcon() {
         if (this.collection.locked) {
-            this.actor.add_actor(this._lockedIcon);
+            this.item.actor.add_actor(this._lockedIcon);
         } else {
-            this.actor.add_actor(this._unlockedIcon);
+            this.item.actor.add_actor(this._unlockedIcon);
         }
     }
     
@@ -95,8 +95,8 @@ class KeyMan {
         this.history = new Data.History(dataDir);
         
         // remember timeouts
-        this.timeouts = []
-        
+        this.timeouts = [];
+
         const icon = new St.Icon({
             icon_name: 'dialog-password',
             style_class: 'system-status-icon',
@@ -188,7 +188,7 @@ class KeyMan {
                 // we don't add the item via addMenuItem because we do not
                 // want the menu to close if the item is clicked
                 this.collectionsMenu.menu.box.add(
-                    new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).actor);
+                    new CollectionItem(this.keyring, col, () => this._repopulateSearchResults()).item.actor);
             }
         }
     }
