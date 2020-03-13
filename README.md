@@ -1,6 +1,6 @@
 # KeyMan
 
-A gnome shell extension to access the keyring in a convenient way.
+A gnome shell extension to access the keyring and/or keepassx in a convenient way.
 
 Simply search for your password and copy it to clipboad by clicking it.
 After a certain amount of time it will be removed automatically (default is 5 seconds).
