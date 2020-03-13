@@ -11,8 +11,12 @@ Finally, this extension provides a history of the last copied passwords.
 
 Contributions are always welcome.
 
-Note that `keyringDbus.js` is auto-generated and copied from [gnome-keyring-js](https://github.com/dpoetzsch/gnome-keyring-js).
-Any changes to this file should occur in this repository.
+Note that this repository contains auto-generated files:
+
+- `keyringDbus.js` is copied from [gnome-keyring-js](https://github.com/dpoetzsch/gnome-keyring-js).
+- `gjsKeepassx.js` is copied from [gjs-keepassx](https://github.com/dpoetzsch/gjs-keepassx).
+
+Any changes to these file should occur in the respective repositories.
 
 ## Development
 
