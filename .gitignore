@@ -4,3 +4,4 @@ extensions
 schemas/gschemas.compiled
 /*.zip
 /.vscode
+node_modules

@@ -1,0 +1,28 @@
+{
+  "name": "keyman",
+  "version": "1.0.0",
+  "description": "A gnome shell extension to access the keyring in a convenient way.",
+  "main": "keyman.js",
+  "scripts": {
+    "lint": "eslint . --ext .js",
+    "prettier-check": "prettier --check '**/*.js' '**/*.json' '**/*.md'",
+    "prettier": "prettier --write '**/*.js' '**/*.json' '**/*.md'",
+    "deploy": "./deploy.sh",
+    "deploy-zip": "./deploy.sh zip"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dpoetzsch/keyman.git"
+  },
+  "author": "David Poetzsch-Heffter <keyman@poehe.de>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dpoetzsch/keyman/issues"
+  },
+  "homepage": "https://github.com/dpoetzsch/keyman#readme",
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "prettier": "^1.19.1"
+  }
+}

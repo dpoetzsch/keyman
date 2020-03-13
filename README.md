@@ -14,6 +14,14 @@ Contributions are always welcome.
 Note that `keyringDbus.js` is auto-generated and copied from [gnome-keyring-js](https://github.com/dpoetzsch/gnome-keyring-js).
 Any changes to this file should occur in this repository.
 
+## Development
+
+Install dev environment: `npm install`
+
+Run prettier: `npm run prettier`
+
+Run linter: `npm run lint`
+
 ## Deploying
 
 Locally, for testing:
@@ -37,8 +45,8 @@ Build a package for extension.gnome.org:
 
 ## Useful links
 
-* A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403](http://stackoverflow.com/a/13315324/3594403)
-* St library reference: [https://developer.gnome.org/st/stable/](https://developer.gnome.org/st/stable/)
+- A collection of useful tips and links for developing gnome shell extensions: [http://stackoverflow.com/a/13315324/3594403](http://stackoverflow.com/a/13315324/3594403)
+- St library reference: [https://developer.gnome.org/st/stable/](https://developer.gnome.org/st/stable/)
 
 # License
 
