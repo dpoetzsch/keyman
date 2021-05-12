@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface domain="keyman">
+  <template class="PrefsWidget" parent="GtkGrid">
+    <property name="orientation">vertical</property>
+    <property name="margin-start">10</property>
+    <property name="margin-end">10</property>
+    <property name="margin-top">10</property>
+    <property name="margin-bottom">10</property>
+
+    <child>
+      <object class="GtkCheckButton" id="primClipboardCheck">
+        <property name="label" translatable="yes">Use primary clipboard (mousekey 3 to insert) instead of default (Strg+V to insert)</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">10</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="durationLabel">
+        <property name="label" translatable="yes">Amount of time passwords stay in clipboard (milis):</property>
+        <property name="sensitive">true</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">10</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkSpinButton" id="durationSpinButton">
+        <property name="adjustment">
+          <object class="GtkAdjustment">
+            <property name="value">0</property>
+            <property name="lower">0</property>
+            <property name="upper">60000</property>
+            <property name="step_increment">1000</property>
+          </object>
+        </property>
+        <property name="numeric">true</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkLabel" id="historySizeLabel">
+        <property name="label" translatable="yes">Number of entries in history:</property>
+        <property name="sensitive">true</property>
+        <property name="margin-top">5</property>
+        <property name="margin-bottom">10</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkSpinButton" id="historySizeSpinButton">
+        <property name="adjustment">
+          <object class="GtkAdjustment">
+            <property name="value">0</property>
+            <property name="lower">0</property>
+            <property name="upper">25</property>
+            <property name="step_increment">1</property>
+          </object>
+        </property>
+        <property name="numeric">true</property>
+      </object>
+    </child>
+  </template>
+</interface>
