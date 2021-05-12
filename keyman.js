@@ -84,7 +84,7 @@ class CollectionItem {
   }
 }
 
-class KeyMan {
+var KeyMan = class KeyMan {
   constructor() {
     this.theButton = new PanelMenu.Button(St.Align.START);
 
@@ -324,4 +324,4 @@ class KeyMan {
     this.theButton.destroy();
     Main.wm.removeKeybinding(Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING);
   }
-}
+};

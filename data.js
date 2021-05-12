@@ -32,7 +32,7 @@ class DataManager {
   }
 }
 
-class History extends DataManager {
+var History = class History extends DataManager {
   constructor(dataDir) {
     super(dataDir, "history.json");
 
@@ -85,7 +85,7 @@ class History extends DataManager {
       this.trimToMaxSize();
     }
   }
-}
+};
 
 // This is currently unused because history replaces bookmarks for now.
 // If I somehow figure out how to program drag&drop and context menus for menu
