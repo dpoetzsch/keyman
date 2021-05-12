@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="keyman">
-  <template class="PrefsWidget" parent="GtkGrid">
+  <template class="PrefsWidget" parent="GtkBox">
     <property name="orientation">vertical</property>
     <property name="margin-start">10</property>
     <property name="margin-end">10</property>
