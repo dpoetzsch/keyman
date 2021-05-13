@@ -13,6 +13,7 @@ if [ -x "$(command -v gnome-extensions)" ]; then
     --force \
     --gettext-domain=keyman \
     --podir=locale/ \
+    --extra-source=prefs.ui \
     --extra-source=clipboard.js \
     --extra-source=data.js \
     --extra-source=keyman.js \
