@@ -103,7 +103,7 @@ var KeyMan = class KeyMan {
       reactive: true,
       track_hover: true,
     });
-    this.theButton.actor.add_actor(icon);
+    this.theButton.add_child(icon);
 
     // Add keybinding
     Main.wm.addKeybinding(
