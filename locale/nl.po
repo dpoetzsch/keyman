@@ -1,0 +1,42 @@
+# Messages of KeyMan - A helper for the gnome keyring
+# Copyright (C) David Poetzsch-Heffter, 2014
+# This file is distributed under the same license as the KeyMan package.
+# David Poetzsch-Heffter <davidpoetzsch@web.de>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0.1\n"
+"Report-Msgid-Bugs-To: davidpoetzsch@web.de\n"
+"POT-Creation-Date: 2014-05-02 15:14+0200\n"
+"PO-Revision-Date: 2021-07-25 14:03+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"Language-Team: Dutch\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0\n"
+
+# Menu
+msgid "Search..."
+msgstr "Zoeken…"
+
+msgid "Nothing found."
+msgstr "Geen zoekresultaten."
+
+msgid "Keyrings"
+msgstr "Sleutelbossen"
+
+# Preferences
+msgid "Use primary clipboard (mousekey 3 to insert) instead of default (Strg+V to insert)"
+msgstr "Primair klembord gebruiken (middelste muistoets/scrollwiel om te plakken) in plaats van standaard (Ctrl+V)"
+
+msgid "Amount of time passwords stay in clipboard (milis):"
+msgstr "Wachtwoorden van klembord wissen na (in ms):"
+
+msgid "Number of entries in history:"
+msgstr "Aantal geschiedenisitems:"
+
+msgid "Open KeyMan menu"
+msgstr "KeyMan-menu openen"
