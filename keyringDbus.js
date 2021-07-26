@@ -51,7 +51,7 @@ Object.defineProperties(String.prototype, {
 });
 /*
  * KeyMan - A gnome shell extension to access the keyring in a convenient way
- * (c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>
+ * (c) 2014 David Poetzsch-Heffter <keyman@poehe.de>
  * This file is distributed under the same licence as the KeyMan package.
  * See file LICENSE for details.
  */
@@ -213,7 +213,7 @@ define("src/utils", ["require", "exports"], function (require, exports) {
 });
 /*
  * KeyMan - A gnome shell extension to access the keyring in a convenient way
- * (c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>
+ * (c) 2014 David Poetzsch-Heffter <keyman@poehe.de>
  * This file is distributed under the same licence as the KeyMan package.
  * See file LICENSE for details.
  */

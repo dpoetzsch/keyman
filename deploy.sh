@@ -33,8 +33,8 @@ if [ -x "$(command -v gnome-extensions)" ]; then
   echo "Enabling extension ..."
   gnome-extensions enable keyman@dpoetzsch.github.com
 
-  echo "Restarting gnome shell..."
-  gnome-shell --replace &
+  # echo "Restarting gnome shell..."
+  # gnome-shell --replace &
 
   exit 0
 fi
@@ -65,8 +65,8 @@ if [ $MODE = "deploy" ]; then
   echo "Copying content..."
   cp -a $FILES $DEST/
 
-  echo "Restarting gnome shell..."
-  gnome-shell --replace &
+  # echo "Restarting gnome shell..."
+  # gnome-shell --replace &
 else
   echo "Creating keyman.zip..."
   zip -r keyman.zip $FILES

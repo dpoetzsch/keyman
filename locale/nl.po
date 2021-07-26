@@ -1,12 +1,12 @@
 # Messages of KeyMan - A helper for the gnome keyring
 # Copyright (C) David Poetzsch-Heffter, 2014
 # This file is distributed under the same license as the KeyMan package.
-# David Poetzsch-Heffter <davidpoetzsch@web.de>, 2014.
+# David Poetzsch-Heffter <keyman@poehe.de>, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
-"Report-Msgid-Bugs-To: davidpoetzsch@web.de\n"
+"Report-Msgid-Bugs-To: keyman@poehe.de\n"
 "POT-Creation-Date: 2014-05-02 15:14+0200\n"
 "PO-Revision-Date: 2021-07-25 14:03+0200\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"

@@ -50,6 +50,6 @@ Build a package for extension.gnome.org:
 
 # License
 
-(c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>.
+(c) 2014 David Poetzsch-Heffter <keyman@poehe.de>.
 This file is distributed under the same licence as the KeyMan package.
 See file LICENSE for details.

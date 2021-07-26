@@ -1,5 +1,5 @@
 # KeyMan - A gnome shell extension to access the keyring in a convenient way
-# (c) 2014 David Poetzsch-Heffter <davidpoetzsch@web.de>
+# (c) 2014 David Poetzsch-Heffter <keyman@poehe.de>
 # This file is distributed under the same licence as the KeyMan package.
 # See file LICENSE for details.
 #
@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.1\n"
-"Report-Msgid-Bugs-To: davidpoetzsch@web.de\n"
+"Report-Msgid-Bugs-To: keyman@poehe.de\n"
 "POT-Creation-Date: 2014-05-02 15:14+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
