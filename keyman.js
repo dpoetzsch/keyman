@@ -119,9 +119,11 @@ var KeyMan = class KeyMan {
       // this is triggered when the keymanager menu is opened
       if (open) {
         // if we do it immediately the focus gets lost again
-        Mainloop.timeout_add_seconds(0, () => {
-          this.searchEntry.grab_key_focus();
-        });
+        this.timeouts.push(
+          Mainloop.timeout_add_seconds(0, () => {
+            this.searchEntry.grab_key_focus();
+          }),
+        );
       } else {
         this.searchEntry.get_stage().set_key_focus(null);
       }
@@ -253,15 +255,17 @@ var KeyMan = class KeyMan {
         // still activate the search in order to not
         // confuse the user!
 
-        Mainloop.timeout_add_seconds(1, () => {
-          const text2 = obj.get_text();
+        this.timeouts.push(
+          Mainloop.timeout_add_seconds(1, () => {
+            const text2 = obj.get_text();
 
-          // if the text already changed again we
-          // don't need to search
-          if (text1 === text2) {
-            this._repopulateSearchResults();
-          }
-        });
+            // if the text already changed again we
+            // don't need to search
+            if (text1 === text2) {
+              this._repopulateSearchResults();
+            }
+          }),
+        );
       }
     });
 
