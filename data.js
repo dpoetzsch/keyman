@@ -33,8 +33,10 @@ class DataManager {
 }
 
 var History = class History extends DataManager {
-  constructor(dataDir) {
+  constructor(settings, dataDir) {
     super(dataDir, "history.json");
+
+    this.settings = settings;
 
     // an array with entries like
     // {path: "/org/freedesktop/secrets/...", label: "TestItem"}
@@ -42,7 +44,7 @@ var History = class History extends DataManager {
   }
 
   getMaxSize() {
-    return Settings.SETTINGS.get_int(Settings.KEY_HISTORY_SIZE);
+    return this.settings.get_int(Settings.KEY_HISTORY_SIZE);
   }
 
   close() {

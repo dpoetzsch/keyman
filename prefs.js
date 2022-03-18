@@ -16,6 +16,8 @@ const KeyManSettingsWidget = GObject.registerClass(
     _init(params = {}) {
       super._init(params);
 
+      const settings = imports.misc.extensionUtils.getSettings();
+
       const primClipboardCheck = this.get_first_child();
       const durationSpinButton = primClipboardCheck
         .get_next_sibling()
@@ -24,21 +26,21 @@ const KeyManSettingsWidget = GObject.registerClass(
         .get_next_sibling()
         .get_next_sibling();
 
-      Settings.SETTINGS.bind(
+      settings.bind(
         Settings.KEY_PRIMARY_CLIPBOARD,
         primClipboardCheck,
         "active",
         Gio.SettingsBindFlags.DEFAULT,
       );
 
-      Settings.SETTINGS.bind(
+      settings.bind(
         Settings.KEY_CLIPBOARD_DURATION,
         durationSpinButton,
         "value",
         Gio.SettingsBindFlags.DEFAULT,
       );
 
-      Settings.SETTINGS.bind(
+      settings.bind(
         Settings.KEY_HISTORY_SIZE,
         historySizeSpinButton,
         "value",
@@ -49,7 +51,7 @@ const KeyManSettingsWidget = GObject.registerClass(
       keybindings[Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING] = _(
         "Open KeyMan menu",
       );
-      this.append(new TranslatorKeybindingsWidget(keybindings));
+      this.append(new TranslatorKeybindingsWidget(settings, keybindings));
     }
   },
 );
@@ -60,10 +62,11 @@ const TranslatorKeybindingsWidget = new GObject.Class({
   GTypeName: "KeyManPrefsKeybindingsWidget",
   Extends: Gtk.Box,
 
-  _init: function(keybindings) {
+  _init: function(settings, keybindings) {
     this.parent();
     this.set_orientation(Gtk.Orientation.VERTICAL);
 
+    this._settings = settings;
     this._keybindings = keybindings;
 
     let scrolled_window = new Gtk.ScrolledWindow();
@@ -122,7 +125,7 @@ const TranslatorKeybindingsWidget = new GObject.Class({
         [this._columns.MODS, this._columns.KEY],
         [mods, key],
       );
-      Settings.SETTINGS.set_strv(name, [value]);
+      this._settings.set_strv(name, [value]);
     });
 
     let keybinding_column = new Gtk.TreeViewColumn({
@@ -152,7 +155,7 @@ const TranslatorKeybindingsWidget = new GObject.Class({
 
     for (let settings_key in this._keybindings) {
       let [key, mods] = Gtk.accelerator_parse(
-        Settings.SETTINGS.get_strv(settings_key)[0],
+        this._settings.get_strv(settings_key)[0],
       );
 
       let iter = this._store.append();

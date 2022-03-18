@@ -86,13 +86,15 @@ class CollectionItem {
 
 var KeyMan = class KeyMan {
   constructor() {
+    this.settings = imports.misc.extensionUtils.getSettings();
+
     this.theButton = new PanelMenu.Button(St.Align.START);
 
     // connect to keyring
     this.keyring = new KeyringConnection();
 
     // initialize history
-    this.history = new Data.History(dataDir);
+    this.history = new Data.History(this.settings, dataDir);
 
     // remember timeouts
     this.timeouts = [];
@@ -108,7 +110,7 @@ var KeyMan = class KeyMan {
     // Add keybinding
     Main.wm.addKeybinding(
       Settings.KEY_OPEN_KEYMAN_MENU_KEYBINDING,
-      Settings.SETTINGS,
+      this.settings,
       Meta.KeyBindingFlags.NONE,
       Shell.ActionMode.NORMAL | Shell.ActionMode.OVERVIEW,
       () => this.theButton.menu.open(),
@@ -142,12 +144,13 @@ var KeyMan = class KeyMan {
     }
 
     this._removeTimeouts();
-    Clipboard.set(secret);
+    const settings = this.settings;
+    Clipboard.set(settings, secret);
 
-    let duration = Settings.SETTINGS.get_int(Settings.KEY_CLIPBOARD_DURATION);
+    let duration = settings.get_int(Settings.KEY_CLIPBOARD_DURATION);
     this.timeouts.push(
       Mainloop.timeout_add(duration, function() {
-        Clipboard.empty();
+        Clipboard.empty(settings);
       }),
     );
   }

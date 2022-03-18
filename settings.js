@@ -7,8 +7,6 @@
  * This code was forked from the text-translator extension.
  */
 
-var SETTINGS = imports.misc.extensionUtils.getSettings();
-
 var KEY_PRIMARY_CLIPBOARD = "primary-clipboard";
 var KEY_CLIPBOARD_DURATION = "clipboard-duration";
 var KEY_HISTORY_SIZE = "history-size";
