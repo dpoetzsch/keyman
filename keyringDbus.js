@@ -32,12 +32,6 @@ Object.defineProperties(window, {
             Pango: { id: 'Pango', exports: imports.gi.Pango },
             GObject: { id: 'GObject', exports: imports.gi.GObject }
         })) },
-    console: { value: {
-            log: function () { print.apply(null, arguments); },
-            warn: function () { print.apply(null, arguments); },
-            error: function () { print.apply(null, arguments); },
-            info: function () { print.apply(null, arguments); }
-        } },
     _: { value: imports.gettext.gettext }
 });
 Object.defineProperties(define, {
