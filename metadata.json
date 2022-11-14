@@ -1,5 +1,5 @@
 {
-  "shell-version": ["41", "42"],
+  "shell-version": ["41", "42", "43"],
   "original-authors": ["keyman@poehe.de"],
   "uuid": "keyman@dpoetzsch.github.com",
   "name": "KeyMan",
