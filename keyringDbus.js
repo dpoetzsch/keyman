@@ -45,7 +45,7 @@ Object.defineProperties(String.prototype, {
 });
 /*
  * KeyMan - A gnome shell extension to access the keyring in a convenient way
- * (c) 2014 David Poetzsch-Heffter <keyman@poehe.de>
+ * (c) 2014 David Poetzsch-Heffter <gnome-dev@poehe.de>
  * This file is distributed under the same licence as the KeyMan package.
  * See file LICENSE for details.
  */
@@ -207,7 +207,7 @@ define("src/utils", ["require", "exports"], function (require, exports) {
 });
 /*
  * KeyMan - A gnome shell extension to access the keyring in a convenient way
- * (c) 2014 David Poetzsch-Heffter <keyman@poehe.de>
+ * (c) 2014 David Poetzsch-Heffter <gnome-dev@poehe.de>
  * This file is distributed under the same licence as the KeyMan package.
  * See file LICENSE for details.
  */
@@ -216,6 +216,7 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
     Object.defineProperty(exports, "__esModule", { value: true });
     var bus = Gio['DBus'].session;
     var secretBus = 'org.freedesktop.secrets';
+    var ByteArray = imports.byteArray;
     function makeItem(label, path) {
         return { "label": label, "path": path };
     }
@@ -251,7 +252,7 @@ define("src/main", ["require", "exports", "Gio", "GLib", "src/keyring-interfaces
                 var res = this.service.LockSync([path]);
                 utils_1.assert(res[1] == "/");
             }
-            callback(String(label), String(secret));
+            callback(String(label), ByteArray.toString(secret));
         };
         /**
          * Invalidates all entries in the label cache for the specified collection.
